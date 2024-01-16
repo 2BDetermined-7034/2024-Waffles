@@ -58,10 +58,6 @@ public class SwerveSubsystem extends SubsystemBase
     //  The gear ratio is 6.75 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75, 1);
-    System.out.println("\"conversionFactor\": {");
-    System.out.println("\t\"angle\": " + angleConversionFactor + ",");
-    System.out.println("\t\"drive\": " + driveConversionFactor);
-    System.out.println("}");
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -108,7 +104,7 @@ public class SwerveSubsystem extends SubsystemBase
                     // This will flip the path being followed to the red side of the field.
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
                     var alliance = DriverStation.getAlliance();
-                    return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+                    return alliance.filter(value -> value == DriverStation.Alliance.Red).isPresent();
                 },
         this // Reference to this subsystem to set requirements
                                   );
