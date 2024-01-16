@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.utils.Matrix;
 import swervelib.math.Matter;
 import swervelib.parser.PIDFConfig;
+
+import java.util.HashMap;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -48,5 +52,21 @@ public final class Constants
     public static final double LEFT_Y_DEADBAND = 0.01;
     public static final double RIGHT_X_DEADBAND = 0.01;
     public static final double TURN_CONSTANT = 0.75;
+  }
+
+  public static final class AprilTags {
+
+
+    public static final HashMap<Integer, Pose3d> tagmap = new HashMap<>();
+    static {
+      Matrix tag1posmat = new Matrix(4, 4);
+      tag1posmat.data = new double[][] {
+              {-0.5,     -0.866025, 0, 6.808597},
+              {0.866025, -0.5,      0, -3.859403},
+              {0,        0,         1, 1.355852},
+              {0, 0, 0, 1}
+      };
+      tagmap.put(0, Matrix.toTransformations(tag1posmat));
+    }
   }
 }
