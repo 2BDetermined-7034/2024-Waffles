@@ -23,7 +23,6 @@ public class PhotonTest extends Command implements SubsystemLogging {
     @Override
     public void execute() {
 
-        log("Targets", photonvision.hasTargets());
 
     }
 
