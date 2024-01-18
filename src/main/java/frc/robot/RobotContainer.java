@@ -19,11 +19,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.PhotonTest;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.vision.Photonvision;
+import org.photonvision.proto.Photon;
+
 import java.io.File;
 
 /**
@@ -41,6 +45,9 @@ public class RobotContainer
                                                                          "swerve/neo"));
   XboxController operatorController = new XboxController(0);
   PS5Controller driverController = new PS5Controller(1);
+
+  Photonvision photon = new Photonvision();
+  PhotonTest x = new PhotonTest(photon);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -104,6 +111,8 @@ public class RobotContainer
         () -> -driverController.getRawAxis(2), () -> true);
 
     drivebase.setDefaultCommand(closedAbsoluteDrive);
+
+    photon.setDefaultCommand(x);
   }
 
   /**

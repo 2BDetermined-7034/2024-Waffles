@@ -1,13 +1,14 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.SubsystemLogging;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.List;
 
-public class Photonvision extends SubsystemBase {
+public class Photonvision extends SubsystemBase implements SubsystemLogging {
     private final PhotonCamera camera;
     private final PhotonPipelineResult pipelineResult;
 
@@ -30,6 +31,6 @@ public class Photonvision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+
     }
 }
