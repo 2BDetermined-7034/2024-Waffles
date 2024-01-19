@@ -9,9 +9,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -19,10 +19,16 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
+import frc.robot.subsystems.vision.Photonvision;
 import frc.robot.utils.SubsystemLogging;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonPoseEstimator;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -42,8 +48,12 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public        double      maximumSpeed = Units.feetToMeters(14.5);
+  public double maximumSpeed = Units.feetToMeters(14.5);
 
+    private PhotonPoseEstimator photonPoseEstimator;
+    Transform3d robotToCam;
+    AprilTagFieldLayout aprilTagFieldLayout = null;
+    Photonvision photonvision = new Photonvision();
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -73,6 +83,24 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
+
+    /**
+     * Translation: Position of the camera relative to the robot in meters
+     * Rotation: Orientation of the camera relative to the robot
+     */
+
+    try {
+      robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,180));
+      aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+
+      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
+
+    } catch(IOException e) {
+      DriverStation.reportError(e.toString(), true);
+    }
+
+
+
 
     setupPathPlanner();
   }
@@ -110,6 +138,12 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
                 },
         this // Reference to this subsystem to set requirements
                                   );
+  }
+
+
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+    photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+    return photonPoseEstimator.update();
   }
 
   /**
@@ -189,10 +223,19 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   @Override
   public void periodic()
   {
-    log("Swerve States", swerveDrive.getStates());
-    log("Pose", swerveDrive.getPose());
+    Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
+    if (estimatedPose.isPresent()) {
+      Pose3d robotPose = estimatedPose.get().estimatedPose;
+      log("Photon Pose", robotPose);
+
+      // TODO Somehow set the post, I forgot how to do it
+    }
   }
 
+  @Override
+  public void simulationPeriodic()
+  {
+  }
 
   /**
    * Get the swerve drive kinematics object.
@@ -225,7 +268,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   {
     return swerveDrive.getPose();
   }
-
   /**
    * Set chassis speeds with closed-loop velocity control.
    *

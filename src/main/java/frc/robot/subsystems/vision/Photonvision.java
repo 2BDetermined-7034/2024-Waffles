@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,13 +13,16 @@ import java.util.List;
 
 public class Photonvision extends SubsystemBase implements SubsystemLogging {
     private final PhotonCamera camera;
-    private final PhotonPipelineResult pipelineResult;
+    private PhotonPipelineResult pipelineResult;
 
     public Photonvision() {
         camera = new PhotonCamera("YourCameraName");
         pipelineResult = new PhotonPipelineResult();
     }
 
+    public PhotonCamera getCamera() {
+        return camera;
+    }
    public boolean hasTargets() {
         return pipelineResult.hasTargets();
    }
@@ -33,6 +37,8 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
 
     @Override
     public void periodic() {
+        pipelineResult = camera.getLatestResult();
+
         log("Targets", "test");
         SmartDashboard.putString("test", "asda");
     }
