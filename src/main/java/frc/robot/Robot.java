@@ -65,7 +65,7 @@ public class Robot extends LoggedRobot
     }
 
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-    CameraServer.startAutomaticCapture();
+    // CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
 
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop

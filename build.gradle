@@ -97,8 +97,6 @@ dependencies {
 
     def akitJson = new JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
-
-    implementation files("C:\\Users\\npspy\\Documents\\Github\\2024-Crescendo\\YAGSL-java-2024.4.1.jar") 
 }
 
 test {

@@ -20,11 +20,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.PhotonTest;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
-import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
+import frc.robot.commands.swervedrive.drivebase.*;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.vision.Limelight;
 import frc.robot.subsystems.vision.Photonvision;
 import org.photonvision.proto.Photon;
 
@@ -43,11 +41,13 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
-  XboxController operatorController = new XboxController(0);
-  PS5Controller driverController = new PS5Controller(1);
+  XboxController operatorController = new XboxController(1);
+  PS5Controller driverController = new PS5Controller(0);
 
-  Photonvision photon = new Photonvision();
-  PhotonTest x = new PhotonTest(photon);
+  Limelight limelight = new Limelight();
+
+//  Photonvision photon = new Photonvision();
+//  PhotonTest x = new PhotonTest(photon);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -57,7 +57,7 @@ public class RobotContainer
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
-    autoChooser.addOption("New Auto", new PathPlannerAuto(""));
+    autoChooser.addOption("New Auto", new PathPlannerAuto("New Auto"));
     //autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -110,10 +110,13 @@ public class RobotContainer
         () -> MathUtil.applyDeadband(driverController.getRawAxis(0), OperatorConstants.LEFT_X_DEADBAND),
         () -> -driverController.getRawAxis(2), () -> true);
 
-    drivebase.setDefaultCommand(closedAbsoluteDrive);
-
-    photon.setDefaultCommand(x);
+    drivebase.setDefaultCommand(new ControllerDrive(drivebase,
+            () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+            () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+            () -> driverController.getRawAxis(2), true));
+//    photon.setDefaultCommand(x);
   }
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

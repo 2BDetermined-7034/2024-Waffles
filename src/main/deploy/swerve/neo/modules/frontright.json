@@ -11,12 +11,16 @@
   },
   "encoder": {
     "type": "cancoder",
-    "id": 10,
+    "id": 4,
     "canbus": null
   },
   "inverted": {
     "drive": false,
-    "angle": false
+    "angle": true
+  },
+  "conversionFactor": {
+    "angle": 16.8,
+    "drive": 0.04654211339
   },
   "absoluteEncoderOffset": 54.229,
   "location": {

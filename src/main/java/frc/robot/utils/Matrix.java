@@ -15,6 +15,8 @@ public class Matrix {
 
     public Matrix(int rows, int columns) {
         data = new double[rows][columns];
+        this.rows = rows;
+        this.columns = columns;
     }
 
     public Matrix(double[][] data) {

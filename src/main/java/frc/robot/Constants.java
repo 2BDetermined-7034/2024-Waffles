@@ -66,7 +66,7 @@ public final class Constants
               {0,        0,         1, 1.355852},
               {0, 0, 0, 1}
       };
-      tagmap.put(0, Matrix.toTransformations(tag1posmat));
+      tagmap.put(1, Matrix.toTransformations(tag1posmat));
     }
   }
 }
