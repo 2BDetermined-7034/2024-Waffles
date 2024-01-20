@@ -34,6 +34,10 @@ public interface SubsystemLogging {
         Logger.recordOutput(String.format("%s/%s", this.getClass().getName().substring(22), key), (val));
     }
 
+    default void log(String key, boolean val) {
+        Logger.recordOutput(String.format("%s/%s", this.getClass().getName().substring(22), key), (val));
+    }
+
 
 
 //    default void log(String key, Object... val) {

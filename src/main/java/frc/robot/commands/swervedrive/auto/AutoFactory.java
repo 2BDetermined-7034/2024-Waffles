@@ -12,9 +12,9 @@ import frc.robot.Constants;
 
 public class AutoFactory {
     public static Command driveUpToTarget() {
-        Pose2d targetPose = Constants.AprilTags.tagmap.get(1).toPose2d().transformBy(new Transform2d(2,2, new Rotation2d()));
+        Pose2d targetPose = new Pose2d(new Translation2d(2.093, 6.861), new Rotation2d());
         PathConstraints constraints = new PathConstraints(
-                3.0, 4.0,
+                1, 1,
                 Units.degreesToRadians(540), Units.degreesToRadians(720));
         return AutoBuilder.pathfindToPose(
                 targetPose,

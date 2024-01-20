@@ -16,7 +16,7 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
     private PhotonPipelineResult pipelineResult;
 
     public Photonvision() {
-        camera = new PhotonCamera("YourCameraName");
+        camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
         pipelineResult = new PhotonPipelineResult();
     }
 
@@ -39,7 +39,5 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
     public void periodic() {
         pipelineResult = camera.getLatestResult();
 
-        log("Targets", "test");
-        SmartDashboard.putString("test", "asda");
     }
 }

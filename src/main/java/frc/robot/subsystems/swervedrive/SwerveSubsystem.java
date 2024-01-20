@@ -19,12 +19,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.vision.Photonvision;
 import frc.robot.utils.SubsystemLogging;
 import org.photonvision.EstimatedRobotPose;
@@ -48,12 +48,13 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public double maximumSpeed = Units.feetToMeters(14.5);
+  public        double      maximumSpeed = Units.feetToMeters(14.5);
 
-    private PhotonPoseEstimator photonPoseEstimator;
-    Transform3d robotToCam;
-    AprilTagFieldLayout aprilTagFieldLayout = null;
-    Photonvision photonvision = new Photonvision();
+  AprilTagFieldLayout aprilTagFieldLayout = null;
+  Photonvision photonvision = RobotContainer.photon;
+  PhotonPoseEstimator photonPoseEstimator;
+
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -84,25 +85,20 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
 
-    /**
-     * Translation: Position of the camera relative to the robot in meters
-     * Rotation: Orientation of the camera relative to the robot
-     */
+    setupPathPlanner();
 
     try {
-      robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,180));
       aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-
+      /*
+      The camera relative to the robot
+       */
+      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
       photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
 
     } catch(IOException e) {
       DriverStation.reportError(e.toString(), true);
     }
 
-
-
-
-    setupPathPlanner();
   }
 
   /**
@@ -139,7 +135,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
         this // Reference to this subsystem to set requirements
                                   );
   }
-
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
     photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
@@ -220,22 +215,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     swerveDrive.drive(velocity);
   }
 
-  @Override
-  public void periodic()
-  {
-    Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
-    if (estimatedPose.isPresent()) {
-      Pose3d robotPose = estimatedPose.get().estimatedPose;
-      log("Photon Pose", robotPose);
 
-      // TODO Somehow set the post, I forgot how to do it
-    }
-  }
 
-  @Override
-  public void simulationPeriodic()
-  {
-  }
 
   /**
    * Get the swerve drive kinematics object.
@@ -268,6 +249,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   {
     return swerveDrive.getPose();
   }
+
   /**
    * Set chassis speeds with closed-loop velocity control.
    *
@@ -422,4 +404,26 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
+
+  @Override
+  public void periodic()
+  {
+
+    if(photonvision.hasTargets()) {
+      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
+
+      if(estimatedPose.isPresent()) {
+        Pose3d robotPose = estimatedPose.get().estimatedPose;
+        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+
+
+        swerveDrive.addVisionMeasurement(robotPose2d, Timer.getFPGATimestamp());
+      }
+    }
+
+    swerveDrive.updateOdometry();
+    log("Swerve States", swerveDrive.getStates());
+    log("Pose", swerveDrive.getPose());
+  }
+
 }

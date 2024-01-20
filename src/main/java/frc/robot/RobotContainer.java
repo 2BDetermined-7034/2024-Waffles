@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.PhotonTest;
+import frc.robot.commands.swervedrive.auto.AutoFactory;
 import frc.robot.commands.swervedrive.drivebase.*;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Limelight;
@@ -44,11 +45,9 @@ public class RobotContainer
   XboxController operatorController = new XboxController(1);
   PS5Controller driverController = new PS5Controller(0);
 
-  Limelight limelight = new Limelight();
+  public static Limelight limelight= new Limelight();
 
-//  Photonvision photon = new Photonvision();
-//  PhotonTest x = new PhotonTest(photon);
-
+  public static Photonvision photon = new Photonvision();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -125,12 +124,16 @@ public class RobotContainer
    * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
+
+
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    new JoystickButton(driverController, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+//    new JoystickButton(driverController, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+
+    new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
 
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }

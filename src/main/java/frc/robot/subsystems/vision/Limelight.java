@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -21,7 +22,7 @@ public class Limelight extends SubsystemBase implements SubsystemLogging {
 		tx = networkTable.getEntry("tx");
 		ty = networkTable.getEntry("ty");
 		ta = networkTable.getEntry("ta");
-		botpose = networkTable.getEntry("botpose");
+		botpose = networkTable.getEntry("botpose_wpired");
 	}
 
     @Override
@@ -40,7 +41,7 @@ public class Limelight extends SubsystemBase implements SubsystemLogging {
 	public double getX() { return x; }
 	public double getY() { return y; }
 	public double getArea() { return area; }
-	private double[] getBotPose() {
+	public double[] getBotPose() {
 		return botpose.getDoubleArray(new double[0]);
 	}
 
@@ -54,6 +55,7 @@ public class Limelight extends SubsystemBase implements SubsystemLogging {
 		log("X", getX());
 		log("y", getY());
 		log("Area", getArea());
+		log("Botpose Double", getBotPose());
 		log("Actual bot pose", getBotPose3D());
 		log("Tag 1 Poses", Constants.AprilTags.tagmap.get(1));
 	}
