@@ -48,9 +48,9 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public        double      maximumSpeed = Units.feetToMeters(14.5);
+  public double maximumSpeed = Units.feetToMeters(14.5);
 
-  AprilTagFieldLayout aprilTagFieldLayout = null;
+  AprilTagFieldLayout aprilTagFieldLayout;
   Photonvision photonvision = RobotContainer.photon;
   PhotonPoseEstimator photonPoseEstimator;
 
@@ -404,11 +404,11 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
-
+  Pose3d whateverWeWantedToLog;
   @Override
   public void periodic()
   {
-
+    
     if(photonvision.hasTargets()) {
       Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
 
@@ -416,14 +416,23 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
         Pose3d robotPose = estimatedPose.get().estimatedPose;
         Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
 
+//        Pose2d tagPose = aprilTagFieldLayout.getTags().get(1).pose.toPose2d();
+//        robotPose2d = robotPose2d.transformBy(new Transform2d(new Translation2d().minus(estimatedPose.get().estimatedPose.getTranslation().toTranslation2d()), new Rotation2d(0.0)));
+//        robotPose2d = robotPose2d.rotateBy(Rotation2d.fromRadians(Timer.getFPGATimestamp()));
+//        robotPose2d = robotPose2d.transformBy(new Transform2d(estimatedPose.get().estimatedPose.getTranslation().toTranslation2d(), new Rotation2d(0.0)));
+        robotPose2d = new Pose2d(robotPose2d.getTranslation(), Rotation2d.fromDegrees(robotPose2d.getRotation().getDegrees() + 130.0));
 
         swerveDrive.addVisionMeasurement(robotPose2d, Timer.getFPGATimestamp());
+
+        whateverWeWantedToLog = estimatedPose.get().estimatedPose;
+        swerveDrive.updateOdometry();
       }
     }
 
-    swerveDrive.updateOdometry();
     log("Swerve States", swerveDrive.getStates());
     log("Pose", swerveDrive.getPose());
+    log("Tag 6", aprilTagFieldLayout.getTags().get(6).pose);
+    log("Estimated Pose", whateverWeWantedToLog);
   }
 
 }
