@@ -27,8 +27,50 @@ public class Matrix {
         this.data = matrix.data;
     }
 
-    public Matrix mul() {
-        return null; //Do Later
+    public Matrix add(Matrix matrix) {
+        if (rows != matrix.rows || columns != matrix.columns) {
+            return null;
+        }
+
+        Matrix result = new Matrix(matrix.rows, columns);
+
+        for (int row = 0; row < rows; ++row) {
+            for (int column = 0; column < columns; ++columns) {
+                result.data[row][column] = data[row][column] + matrix.data[row][column];
+            }
+        }
+
+        return result;
+    }
+
+    public Matrix mul(Matrix matrix) {
+        if (columns != matrix.rows) {
+            return null;
+        }
+
+        Matrix result = new Matrix(matrix.rows, columns);
+
+        for (int row = 0; row < rows; ++row) {
+            for (int column = 0; column < columns; ++columns) {
+                double sum = 0.0;
+                for (int i = 0; i < columns; ++i) {
+                    sum += data[row][i] * matrix.data[i][column];
+                }
+
+                result.data[row][column] = sum;
+            }
+        }
+
+        return result;
+    }
+
+    public void translate(Translation3d translation) {
+        if (rows != 4 && columns != 4) {
+            return;
+        }
+
+//        data[0][3]
+   /
     }
 
     public static Pose3d toTransformations(Matrix matrix) {
