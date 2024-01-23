@@ -70,7 +70,6 @@ public class Matrix {
         }
 
 //        data[0][3]
-   /
     }
 
     public static Pose3d toTransformations(Matrix matrix) {

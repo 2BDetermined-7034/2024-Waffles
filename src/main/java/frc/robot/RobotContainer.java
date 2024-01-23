@@ -45,9 +45,9 @@ public class RobotContainer
   XboxController operatorController = new XboxController(1);
   PS5Controller driverController = new PS5Controller(0);
 
-  public static Limelight limelight= new Limelight();
+//  public static Limelight limelight= new Limelight();
 
-  public static Photonvision photon = new Photonvision();
+//  public static Photonvision photon = new Photonvision();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */

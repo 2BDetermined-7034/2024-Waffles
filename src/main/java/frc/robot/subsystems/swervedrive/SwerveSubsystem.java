@@ -51,7 +51,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public        double      maximumSpeed = Units.feetToMeters(14.5);
 
   AprilTagFieldLayout aprilTagFieldLayout = null;
-  Photonvision photonvision = RobotContainer.photon;
+//  Photonvision photonvision = RobotContainer.photon;
   PhotonPoseEstimator photonPoseEstimator;
 
 
@@ -92,8 +92,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       /*
       The camera relative to the robot
        */
-      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
-      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
+//      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
+//      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
 
     } catch(IOException e) {
       DriverStation.reportError(e.toString(), true);
@@ -409,21 +409,23 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public void periodic()
   {
 
-    if(photonvision.hasTargets()) {
-      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
-
-      if(estimatedPose.isPresent()) {
-        Pose3d robotPose = estimatedPose.get().estimatedPose;
-        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-
-
-        swerveDrive.addVisionMeasurement(robotPose2d, Timer.getFPGATimestamp());
-      }
-    }
-
-    swerveDrive.updateOdometry();
-    log("Swerve States", swerveDrive.getStates());
-    log("Pose", swerveDrive.getPose());
+//    if(photonvision.hasTargets()) {
+////      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
+//      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
+//
+//
+//      if(estimatedPose.isPresent()) {
+//        Pose3d robotPose = estimatedPose.get().estimatedPose;
+//        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+//
+//
+//        swerveDrive.addVisionMeasurement(robotPose2d, Timer.getFPGATimestamp());
+//      }
+//    }
+//
+//    swerveDrive.updateOdometry();
+//    log("Swerve States", swerveDrive.getStates());
+//    log("Pose", swerveDrive.getPose());
   }
 
 }
