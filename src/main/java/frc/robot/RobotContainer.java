@@ -45,7 +45,7 @@ public class RobotContainer
   XboxController operatorController = new XboxController(1);
   PS5Controller driverController = new PS5Controller(0);
 
-  public static Limelight limelight= new Limelight();
+//  public static Limelight limelight= new Limelight();
 
   public static Photonvision photon = new Photonvision();
   /**
@@ -72,6 +72,12 @@ public class RobotContainer
         () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> driverController.getRightX(), () -> true);
 
+    TeleopDrive closedFieldRelOperator = new TeleopDrive(
+            drivebase,
+            () -> MathUtil.applyDeadband(operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+            () -> MathUtil.applyDeadband(operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+            () -> operatorController.getRightX(), () -> true);
+
 //    drivebase.setDefaultCommand(new ControllerDrive(drivebase,
 //            () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
 //            () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
@@ -93,14 +99,10 @@ public class RobotContainer
 
   private void configureBindings()
   {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-//    new JoystickButton(driverController, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
-
     new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
 
-//    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+    new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
   }
 
   /**
