@@ -418,10 +418,12 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
 
 
         swerveDrive.addVisionMeasurement(robotPose2d, Timer.getFPGATimestamp());
+        swerveDrive.setGyroOffset(robotPose.getRotation());
       }
     }
 
     swerveDrive.updateOdometry();
+    log("Navx", swerveDrive.getYaw().getDegrees());
     log("Swerve States", swerveDrive.getStates());
     log("Pose", swerveDrive.getPose());
   }
