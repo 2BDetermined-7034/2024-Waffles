@@ -29,7 +29,7 @@ public class AutoFactory {
     }
 
 
-    public static Command testOnTheFly() {
+    // public static Command testOnTheFly() {
 
-    }
+    // }
 }
