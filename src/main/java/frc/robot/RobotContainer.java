@@ -42,8 +42,8 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
-  XboxController operatorController = new XboxController(1);
-  PS5Controller driverController = new PS5Controller(0);
+  XboxController driverController = new XboxController(1);
+  PS5Controller operatorController = new PS5Controller(0);
 
 //  public static Limelight limelight= new Limelight();
 
@@ -84,18 +84,20 @@ public class RobotContainer
                                                                          () -> MathUtil.applyDeadband(driverController.getLeftX(),
                                                                                                       OperatorConstants.LEFT_X_DEADBAND),
                                                                          () -> driverController.getRawAxis(2));
-
+    /*
     AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
                                                                       () -> MathUtil.applyDeadband(driverController.getLeftY(),
                                                                                                 OperatorConstants.LEFT_Y_DEADBAND),
                                                                       () -> MathUtil.applyDeadband(driverController.getLeftX(),
                                                                                                   OperatorConstants.LEFT_X_DEADBAND),
                                                                       () -> MathUtil.applyDeadband(driverController.getRightX(),
-                                                                                                  OperatorConstants.RIGHT_X_DEADBAND), 
+                                                                                                  OperatorConstants.RIGHT_X_DEADBAND),
                                                                       driverController::getCircleButton,
                                                                       driverController::getSquareButton,
                                                                       driverController::getTriangleButton,
                                                                       driverController::getCrossButton);
+     */
+
 
     TeleopDrive simClosedFieldRel = new TeleopDrive(drivebase,
                                                     () -> MathUtil.applyDeadband(driverController.getLeftY(),
@@ -133,7 +135,7 @@ public class RobotContainer
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
 //    new JoystickButton(driverController, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
-    new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
+    //new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
 
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
