@@ -42,8 +42,8 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
-  XboxController driverController = new XboxController(1);
-  PS5Controller operatorController = new PS5Controller(0);
+  XboxController operatorController = new XboxController(1);
+  PS5Controller driverController = new PS5Controller(0);
 
 //  public static Limelight limelight= new Limelight();
 
@@ -114,7 +114,7 @@ public class RobotContainer
     drivebase.setDefaultCommand(new ControllerDrive(drivebase,
             () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
             () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-            () -> driverController.getRawAxis(2), true));
+            () -> driverController.getRightX(), true));
 //    photon.setDefaultCommand(x);
   }
 

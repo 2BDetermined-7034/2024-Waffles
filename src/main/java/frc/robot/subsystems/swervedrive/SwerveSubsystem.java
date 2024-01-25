@@ -423,7 +423,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
 //      }
 //    }
 //
-//    swerveDrive.updateOdometry();
+    swerveDrive.updateOdometry();
 //    log("Swerve States", swerveDrive.getStates());
 //    log("Pose", swerveDrive.getPose());
   }
