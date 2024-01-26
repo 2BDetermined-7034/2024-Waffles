@@ -51,7 +51,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public        double      maximumSpeed = Units.feetToMeters(14.5);
 
   AprilTagFieldLayout aprilTagFieldLayout = null;
-  Photonvision photonvision = RobotContainer.photon;
+//  Photonvision photonvision = RobotContainer.photon;
   PhotonPoseEstimator photonPoseEstimator;
 
   // TODO: EXPERIMENTAL
@@ -95,8 +95,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       /*
       The camera relative to the robot
        */
-      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
-      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
+//      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
+//      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
 
     } catch(IOException e) {
       DriverStation.reportError(e.toString(), true);
@@ -434,6 +434,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     log("Swerve States", swerveDrive.getStates());
     log("Pose", swerveDrive.getPose());
     log("Pose + odometry offset", swerveDrive.getPose().rotateBy(getHeading()));
+
   }
 
   public Rotation2d getYaw() {
