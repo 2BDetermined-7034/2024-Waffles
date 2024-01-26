@@ -54,6 +54,9 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   Photonvision photonvision = RobotContainer.photon;
   PhotonPoseEstimator photonPoseEstimator;
 
+  // TODO: EXPERIMENTAL
+  public Rotation2d angleRelativeTo;
+
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -98,6 +101,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     } catch(IOException e) {
       DriverStation.reportError(e.toString(), true);
     }
+
+    angleRelativeTo = swerveDrive.getYaw();
 
   }
 
@@ -275,6 +280,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
    */
   public void zeroGyro()
   {
+    swerveDrive.setGyroOffset(new Rotation3d(0,0,swerveDrive.getOdometryHeading().getRadians()));
+
     swerveDrive.zeroGyro();
   }
 
@@ -295,7 +302,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
    */
   public Rotation2d getHeading()
   {
-    return swerveDrive.getYaw();
+    return swerveDrive.getOdometryHeading();
   }
 
   /**
@@ -417,14 +424,23 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
         Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
 
 
-        swerveDrive.addVisionMeasurement(robotPose2d, estimatedPose.get().timestampSeconds);
-        swerveDrive.setGyroOffset(new Rotation3d(0,0,swerveDrive.getOdometryHeading().getDegrees()));
+        swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
+        //swerveDrive.setGyroOffset(new Rotation3d(0,0,swerveDrive.getOdometryHeading().getDegrees()));
+
       }
     }
 
     swerveDrive.updateOdometry();
     log("Swerve States", swerveDrive.getStates());
     log("Pose", swerveDrive.getPose());
+    log("Pose + odometry offset", swerveDrive.getPose().rotateBy(getHeading()));
   }
 
+  public Rotation2d getYaw() {
+    return swerveDrive.getYaw();
+  }
+
+  public void setAngleRelativeTo() {
+    this.angleRelativeTo = swerveDrive.getYaw();
+  }
 }
