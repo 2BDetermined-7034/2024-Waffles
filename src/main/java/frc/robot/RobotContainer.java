@@ -85,7 +85,7 @@ public class RobotContainer
 //            () -> driverController.getRawAxis(2), true));
 //
 
-    drivebase.setDefaultCommand(closedFieldRel);
+    drivebase.setDefaultCommand(closedFieldRelOperator);
   }
 
 
