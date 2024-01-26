@@ -64,7 +64,7 @@ public class TeleopDriveExperimental extends Command
     SmartDashboard.putNumber("omega", angVelocity);
 
     // Test modifying the direction to be towards a certain angle
-    Translation2d tranlatedDirection = new Pose2d(xVelocity, yVelocity, new Rotation2d()).rotateBy().getTranslation();
+    Translation2d tranlatedDirection = new Pose2d(xVelocity, yVelocity, new Rotation2d()).rotateBy(swerve.getYaw().minus(swerve.getAngleRelativeTo())).getTranslation();
 
 
 

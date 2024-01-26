@@ -443,4 +443,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public void setAngleRelativeTo() {
     this.angleRelativeTo = swerveDrive.getYaw();
   }
+  public Rotation2d getAngleRelativeTo() {
+    return angleRelativeTo;
+  }
 }
