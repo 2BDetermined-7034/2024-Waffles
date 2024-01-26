@@ -44,6 +44,12 @@ public final class Constants
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
 
+  public static class Speeds {
+    public static final double TURN_SPEED = 2.5; //aaryan pls dont set it to 5
+    /** 1 is <b><i>highly<i/><b/> recommended!*/
+    public static final double MOVEMENT_SPEED = 1;
+  }
+
   public static class OperatorConstants
   {
 

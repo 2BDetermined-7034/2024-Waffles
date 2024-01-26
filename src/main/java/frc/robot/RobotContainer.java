@@ -9,7 +9,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,13 +18,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.swervedrive.PhotonTest;
 import frc.robot.commands.swervedrive.auto.AutoFactory;
-import frc.robot.commands.swervedrive.drivebase.*;
+import frc.robot.commands.swervedrive.drivebase.IntakeCommand;
+import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
+import frc.robot.subsystems.swervedrive.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.vision.Limelight;
 import frc.robot.subsystems.vision.Photonvision;
-import org.photonvision.proto.Photon;
 
 import java.io.File;
 
@@ -36,6 +34,7 @@ import java.io.File;
  */
 public class RobotContainer
 {
+  private final Intake intake = new Intake();
   private final SendableChooser<Command> autoChooser;
 
 
@@ -101,6 +100,7 @@ public class RobotContainer
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
     new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
+    new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakeCommand(intake));
 
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
   }
