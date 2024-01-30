@@ -76,6 +76,7 @@ public class RobotContainer
             drivebase,
             () -> MathUtil.applyDeadband(operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
             () -> MathUtil.applyDeadband(operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+
             () -> operatorController.getRightX(), () -> true);
 
 //    drivebase.setDefaultCommand(new ControllerDrive(drivebase,
@@ -85,6 +86,7 @@ public class RobotContainer
 //
 
     drivebase.setDefaultCommand(closedFieldRel);
+
   }
 
 
@@ -101,11 +103,8 @@ public class RobotContainer
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
     new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
-//    new JoystickButton(driverController, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 
-    //new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
-
-//    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+    new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
   }
 
   /**
