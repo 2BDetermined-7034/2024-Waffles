@@ -4,23 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.littletonrobotics.junction.LoggedRobot;
+import swervelib.parser.SwerveParser;
+
 import java.io.File;
 import java.io.IOException;
-
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import swervelib.parser.SwerveParser;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as
@@ -70,7 +62,7 @@ public class Robot extends LoggedRobot
 
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
     // immediately when disabled, but then also let it be pushed more 
-    disabledTimer = new Timer();
+    //disabledTimer = new Timer();
   }
 
   /**
@@ -97,18 +89,18 @@ public class Robot extends LoggedRobot
   public void disabledInit()
   {
     m_robotContainer.setMotorBrake(true);
-    disabledTimer.reset();
-    disabledTimer.start();
+    //disabledTimer.reset();
+    //disabledTimer.start();
   }
 
   @Override
   public void disabledPeriodic()
   {
-    if (disabledTimer.hasElapsed(Constants.Drivebase.WHEEL_LOCK_TIME))
-    {
-      m_robotContainer.setMotorBrake(false);
-      disabledTimer.stop();
-    }
+//    if (disabledTimer.hasElapsed(Constants.Drivebase.WHEEL_LOCK_TIME))
+//    {
+//      //m_robotContainer.setMotorBrake(false);
+//      //disabledTimer.stop();
+//    }
   }
 
   /**
