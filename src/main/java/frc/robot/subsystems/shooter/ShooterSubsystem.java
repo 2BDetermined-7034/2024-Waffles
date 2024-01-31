@@ -48,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	public void updateLogging() {
 		log("Shooter Velocity", getVelocityTalonVelocity());
 		log("Shooter Angle Position", getAnglePosition());
-		log("Shooter Angle Velocity")
+		log("Shooter Angle Velocity", getAngleVelocity());
 	}
 
 	/**
