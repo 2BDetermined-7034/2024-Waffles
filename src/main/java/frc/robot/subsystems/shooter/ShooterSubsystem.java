@@ -18,6 +18,10 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	private final CANSparkMax indexerNeo550;
 
 
+	/**
+	 * Shooter Subsystem for Waffles Consisting of a Velocity Talon,
+	 * Angle Adjustment Talon, and an Indexing Neo550
+	 */
 	public ShooterSubsystem() {
 		//TODO set Motor IDs in Constants
 		this.velocityTalon = new TalonSRX(shooterVelocityTalonID);
