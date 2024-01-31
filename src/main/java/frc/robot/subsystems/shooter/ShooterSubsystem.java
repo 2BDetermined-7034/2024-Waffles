@@ -13,9 +13,9 @@ import frc.robot.utils.SubsystemLogging;
 import static frc.robot.Constants.Shooter.*;
 
 public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging {
-	private TalonSRX velocityTalon;
-	private TalonSRX angleTalon;
-	private CANSparkMax indexerNeo550;
+	private final TalonSRX velocityTalon;
+	private final TalonSRX angleTalon;
+	private final CANSparkMax indexerNeo550;
 
 
 	public ShooterSubsystem() {
@@ -101,7 +101,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 
 	/**
 	 * Sets Indexer Gearbox Neo550 Speed as a Percent [-1.0 - 1.0]
-	 * @param speed percent velocoity
+	 * @param speed percent velocity
 	 */
 	public void setIndexerNeo550Speed(double speed) {
 		indexerNeo550.set(speed);
