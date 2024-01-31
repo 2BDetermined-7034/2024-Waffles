@@ -47,22 +47,25 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 
 	public void updateLogging() {
 		log("Shooter Velocity", getVelocityTalonVelocity());
+		log("Shooter Angle Position", getAnglePosition());
+		log("Shooter Angle Velocity")
 	}
 
 	/**
 	 * Sets Velocity based on speed, in rpm
-	 * @param speed velocity
+	 * Converts RPM to Sensor Units
+	 * @param targetVelocity velocity
 	 */
-	public void setVelocityTalon(double speed) {
-		velocityTalon.set(ControlMode.Velocity, speed * 4096 / 600);
+	public void setVelocityTalon(double targetVelocity) {
+		velocityTalon.set(ControlMode.Velocity, targetVelocity * 4096 / 600);
 	}
 
 	/**
-	 * Returns Velocity Talon's velocity
+	 * Returns Velocity Talon's velocity in rpm
 	 * @return ShooterVelocity
 	 */
 	public double getVelocityTalonVelocity() {
-		return velocityTalon.getSelectedSensorVelocity();
+		return velocityTalon.getSelectedSensorVelocity() * 600 / 4096;
 	}
 
 	/**
@@ -78,14 +81,22 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 
 	/**
 	 * Sets Angle Talon's Velocity in rpm (Shouldn't need to be used outside of testing)
-	 * @param speed
+	 * @param targetVelocity velocity
 	 */
-	public void setAngleTalonVelocity(double speed) {
-		angleTalon.set(ControlMode.Velocity, speed * 4096 / 600);
+	public void setAngleTalonVelocity(double targetVelocity) {
+		angleTalon.set(ControlMode.Velocity, targetVelocity * 4096 / 600);
 	}
 
 	public double getAnglePosition() {
 		return angleTalon.getActiveTrajectoryPosition();
+	}
+
+	/**
+	 * get Angle Talon velocity in rpm
+	 * @return velocity rpm
+	 */
+	public double getAngleVelocity() {
+		return angleTalon.getSelectedSensorVelocity() * 600 / 4096;
 	}
 
 	/**
