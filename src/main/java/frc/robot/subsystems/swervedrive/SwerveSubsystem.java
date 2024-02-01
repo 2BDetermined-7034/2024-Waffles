@@ -420,11 +420,12 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
 
       if(estimatedPose.isPresent()) {
-        //Pose3d robotPose = estimatedPose.get().estimatedPose;
+        Pose3d robotPose = estimatedPose.get().estimatedPose;
         Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
 
 
         swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
+//        swerveDrive.setGyroOffset(robotPose.getRotation());
         //swerveDrive.setGyroOffset(new Rotation3d(0,0,swerveDrive.getOdometryHeading().getDegrees()));
 
       }
