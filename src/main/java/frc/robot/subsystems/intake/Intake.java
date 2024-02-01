@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.swervedrive;
+package frc.robot.subsystems.intake;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
@@ -15,10 +15,10 @@ public class Intake extends SubsystemBase {
 	CANSparkMax Motor2;
 	CANSparkMax Motor3;
 	public Intake() {
-		Motor1 = new CANSparkMax(1, CANSparkLowLevel.MotorType.kBrushless);
-		Motor2 = new CANSparkMax(2,CANSparkLowLevel.MotorType.kBrushless);
+		Motor1 = new CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless);
+		Motor2 = new CANSparkMax(11,CANSparkLowLevel.MotorType.kBrushless);
 		Motor2.setInverted(true);
-		Motor3 = new CANSparkMax(3,CANSparkLowLevel.MotorType.kBrushless);
+		Motor3 = new CANSparkMax(12,CANSparkLowLevel.MotorType.kBrushless);
 		Motor3.setInverted(true);
 
 	}

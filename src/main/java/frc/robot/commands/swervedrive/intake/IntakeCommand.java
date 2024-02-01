@@ -2,10 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.swervedrive.drivebase;
+package frc.robot.commands.swervedrive.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.swervedrive.Intake;
+import frc.robot.subsystems.intake.Intake;
 
 /** An example command that uses an example subsystem. */
 public class IntakeCommand extends Command {
@@ -17,7 +17,7 @@ public class IntakeCommand extends Command {
 	 *
 	 * @param subsystem The subsystem used by this command.
 	 */
-	public IntakeCommand(frc.robot.subsystems.swervedrive.Intake subsystem) {
+	public IntakeCommand(Intake subsystem) {
 		intake = subsystem;
 		// Use addRequirements() here to declare subsystem dependencies.
 		addRequirements(subsystem);
