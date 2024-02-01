@@ -13,10 +13,8 @@ public class ShooterCommand extends Command {
 
 	@Override
 	public void execute() {
-		shooter.setVelocityTalon(250);
-//		shooter.setAngleTalonPosition(1000);
-		shooter.setAngleTalonVelocity(250);
-		shooter.setIndexerNeo550Speed(0.2);
+		shooter.setVelocityTalon(0.3);
+		shooter.setAngleTalonVelocity(0.3);
 	}
 
 	@Override

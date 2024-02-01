@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.auto.AutoFactory;
 import frc.robot.commands.drivebase.TeleopDrive;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -86,7 +85,7 @@ public class RobotContainer
 //            () -> driverController.getRawAxis(2), true));
 //
 
-    drivebase.setDefaultCommand(closedFieldRel);
+//    drivebase.setDefaultCommand(closedFieldRel);
 
   }
 
@@ -103,7 +102,7 @@ public class RobotContainer
   private void configureBindings()
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
+   // new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
 
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
 

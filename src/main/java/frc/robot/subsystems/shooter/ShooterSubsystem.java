@@ -1,9 +1,8 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
@@ -13,10 +12,9 @@ import frc.robot.utils.SubsystemLogging;
 import static frc.robot.Constants.Shooter.*;
 
 public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging {
-	private final TalonSRX velocityTalon;
-	private final TalonSRX angleTalon;
+	private final TalonFX velocityTalon;
+	private final TalonFX angleTalon;
 	private final CANSparkMax indexerNeo550;
-
 
 	/**
 	 * Shooter Subsystem for Waffles Consisting of a Velocity Talon,
@@ -24,21 +22,21 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 */
 	public ShooterSubsystem() {
 		//TODO set Motor IDs in Constants
-		this.velocityTalon = new TalonSRX(shooterVelocityTalonID);
-		velocityTalon.setNeutralMode(NeutralMode.Brake);
-		velocityTalon.configNeutralDeadband(0.001);
+		this.velocityTalon = new TalonFX(shooterVelocityTalonID);
+		this.angleTalon = new TalonFX(shooterAngleTalonID);
+		velocityTalon.setNeutralMode(NeutralModeValue.Brake);
+		angleTalon.setNeutralMode(NeutralModeValue.Brake);
 
+		//velocityTalon.configNeutralDeadband(0.001);
 
-		this.angleTalon = new TalonSRX(shooterAngleTalonID);
-		this.velocityTalon.setNeutralMode(NeutralMode.Brake);
-		angleTalon.configNeutralDeadband(0.001);
-		//init encoder to 0 position on boot
-		angleTalon.setSelectedSensorPosition(0);
-
+//		this.angleTalon = new TalonSRX(shooterAngleTalonID);
+//		this.velocityTalon.setNeutralMode(NeutralMode.Brake);
+//		angleTalon.configNeutralDeadband(0.001);
+//		//init encoder to 0 position on boot
+//		angleTalon.setSelectedSensorPosition(0);
 
 		this.indexerNeo550 = new CANSparkMax(shooterNeo550ID, CANSparkLowLevel.MotorType.kBrushless);
 		indexerNeo550.setIdleMode(CANSparkBase.IdleMode.kBrake);
-
 	}
 
 	@Override
@@ -50,18 +48,17 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 
 
 	public void updateLogging() {
-		log("Shooter Velocity", getVelocityTalonVelocity());
-		log("Shooter Angle Position", getAnglePosition());
-		log("Shooter Angle Velocity", getAngleVelocity());
+
 	}
 
+
+
 	/**
-	 * Sets Velocity based on speed, in rpm
-	 * Converts RPM to Sensor Units
+	 * Sets Velocity based on speed [-1.0, 1.0]
 	 * @param targetVelocity velocity
 	 */
 	public void setVelocityTalon(double targetVelocity) {
-		velocityTalon.set(ControlMode.Velocity, targetVelocity * 4096 / 600);
+		velocityTalon.set(targetVelocity);
 	}
 
 	/**
@@ -69,30 +66,30 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @return ShooterVelocity
 	 */
 	public double getVelocityTalonVelocity() {
-		return velocityTalon.getSelectedSensorVelocity() * 600 / 4096;
+		return velocityTalon.getVelocity().getValue();
 	}
 
 	/**
-	 * Sets the position of the Angle Talon Motor using Motion Magic
+	 * Sets the position of the Angle Talon Motor in rotations
 	 * TODO tune ff
 	 * @param position encoder position
 	 */
 	public void setAngleTalonPosition(double position) {
 		double feedForward = 0.00;
-		angleTalon.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, feedForward);
+		angleTalon.setPosition(position);
 	}
 
 
 	/**
-	 * Sets Angle Talon's Velocity in rpm (Shouldn't need to be used outside of testing)
+	 * Sets Angle Talon's Velocity in rpm
 	 * @param targetVelocity velocity
 	 */
 	public void setAngleTalonVelocity(double targetVelocity) {
-		angleTalon.set(ControlMode.Velocity, targetVelocity * 4096 / 600);
+		angleTalon.set(targetVelocity);
 	}
 
 	public double getAnglePosition() {
-		return angleTalon.getActiveTrajectoryPosition();
+		return angleTalon.getPosition().getValue();
 	}
 
 	/**
@@ -100,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @return velocity rpm
 	 */
 	public double getAngleVelocity() {
-		return angleTalon.getSelectedSensorVelocity() * 600 / 4096;
+		return angleTalon.getVelocity().getValue();
 	}
 
 	/**
@@ -110,10 +107,4 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	public void setIndexerNeo550Speed(double speed) {
 		indexerNeo550.set(speed);
 	}
-
-
-
-
-
-
 }
