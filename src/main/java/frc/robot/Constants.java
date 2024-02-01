@@ -69,4 +69,10 @@ public final class Constants
       tagmap.put(1, Matrix.toTransformations(tag1posmat));
     }
   }
+
+  public static final class Shooter {
+    public static final int shooterVelocityTalonID = 5;
+    public static final int shooterAngleTalonID = 6;
+    public static final int shooterNeo550ID = 9;
+  }
 }

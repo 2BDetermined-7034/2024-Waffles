@@ -9,7 +9,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,13 +18,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.swervedrive.PhotonTest;
-import frc.robot.commands.swervedrive.auto.AutoFactory;
-import frc.robot.commands.swervedrive.drivebase.*;
+import frc.robot.commands.drivebase.TeleopDrive;
+import frc.robot.commands.shooter.ShooterCommand;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.vision.Limelight;
-import frc.robot.subsystems.vision.Photonvision;
-import org.photonvision.proto.Photon;
 
 import java.io.File;
 
@@ -48,6 +44,10 @@ public class RobotContainer
 //  public static Limelight limelight= new Limelight();
 
 //  public static Photonvision photon = new Photonvision();
+
+  public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  public static ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -85,7 +85,7 @@ public class RobotContainer
 //            () -> driverController.getRawAxis(2), true));
 //
 
-    drivebase.setDefaultCommand(closedFieldRel);
+//    drivebase.setDefaultCommand(closedFieldRel);
 
   }
 
@@ -102,9 +102,11 @@ public class RobotContainer
   private void configureBindings()
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
+   // new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
 
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
+
+    new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
   }
 
   /**
