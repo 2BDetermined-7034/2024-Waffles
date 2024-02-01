@@ -11,10 +11,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -98,8 +95,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       /*
       The camera relative to the robot
        */
-//      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
-//      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
+      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
+      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
 
     } catch(IOException e) {
       DriverStation.reportError(e.toString(), true);
