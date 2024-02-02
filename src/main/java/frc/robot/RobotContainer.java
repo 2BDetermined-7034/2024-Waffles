@@ -18,7 +18,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+
+import frc.robot.commands.swervedrive.auto.AutoFactory;
+import frc.robot.commands.swervedrive.intake.IntakeCommand;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
+
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
 
@@ -31,6 +37,7 @@ import java.io.File;
  */
 public class RobotContainer
 {
+  private final Intake intake = new Intake();
   private final SendableChooser<Command> autoChooser;
 
 
@@ -96,7 +103,11 @@ public class RobotContainer
   private void configureBindings()
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
+;
+    new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakeCommand(intake));
+
     //new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
+
 
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
   }
