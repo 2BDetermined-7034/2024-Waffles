@@ -95,8 +95,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       /*
       The camera relative to the robot
        */
-      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
-      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
+      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,Math.PI));
+      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonvision.getCamera(), robotToCam);
 
     } catch(IOException e) {
       DriverStation.reportError(e.toString(), true);
@@ -417,6 +417,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   {
 
     if(photonvision.hasTargets()) {
+
       Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
 
       if(estimatedPose.isPresent()) {
@@ -426,7 +427,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
 
         swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
 //        swerveDrive.setGyroOffset(robotPose.getRotation());
-        //swerveDrive.setGyroOffset(new Rotation3d(0,0,swerveDrive.getOdometryHeading().getDegrees()));
 
       }
     }

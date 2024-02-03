@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.auto.AutoFactory;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
@@ -35,7 +36,7 @@ public class RobotContainer
 
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  public SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
   XboxController operatorController = new XboxController(1);
   PS5Controller driverController = new PS5Controller(0);
@@ -61,6 +62,9 @@ public class RobotContainer
     // Configure the trigger bindings
     configureBindings();
 
+    /**
+     * X and y are swapped
+     */
     TeleopDrive closedFieldRel = new TeleopDrive(
         drivebase,
         () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
@@ -96,7 +100,10 @@ public class RobotContainer
   private void configureBindings()
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    //new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
+    new AutoFactory();
+//    new Trigger(driverController::getCircleButton).whileTrue(AutoFactory.driveUpToTarget(drivebase.getPose().getTranslation()));
+    new Trigger(driverController::getCircleButton).whileTrue(AutoFactory.forward());
+    new Trigger(driverController::getTriangleButton).whileTrue(AutoFactory.driveUpToTarget());
 
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
   }
