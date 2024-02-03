@@ -37,8 +37,14 @@ public class ClimbSubsystem extends SubsystemBase {
 		cwEncoder = cwMotor.getEncoder();
 		ccwEncoder = ccwMotor.getEncoder();
 
+		cwEncoder.setPosition(0.0);
+		ccwEncoder.setPosition(0.0);
+
 		cwController = new PIDController(0.5, 0.0, 0.3);
 		ccwController = new PIDController(0.5, 0.0, 0.3);
+
+		cwController.setTolerance(0.1);
+		ccwController.setTolerance(0.1);
 
 		targetPosition = CLIMB_MOTOR_START_POSITION_REVOLUTIONS;
 	}
@@ -47,9 +53,9 @@ public class ClimbSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		if (!cwController.atSetpoint())
-			cwEncoder.setPosition(cwController.calculate(cwEncoder.getPosition(), targetPosition));
+			cwMotor.set(cwController.calculate(cwEncoder.getPosition(), targetPosition));
 		if (!ccwController.atSetpoint())
-			ccwEncoder.setPosition(ccwController.calculate(ccwEncoder.getPosition(), targetPosition));
+			ccwMotor.set(ccwController.calculate(ccwEncoder.getPosition(), targetPosition));
 	}
 
 	//Extend the climbing arm
@@ -60,6 +66,10 @@ public class ClimbSubsystem extends SubsystemBase {
 	//Retract the climbing arm
 	public void retract() {
 		targetPosition = CLIMB_MOTOR_START_POSITION_REVOLUTIONS;
+	}
+
+	public boolean isFinished() {
+		return cwController.atSetpoint() && ccwController.atSetpoint();
 	}
 }
 
