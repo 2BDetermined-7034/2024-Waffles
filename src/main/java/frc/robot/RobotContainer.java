@@ -36,7 +36,7 @@ public class RobotContainer
 
 
   // The robot's subsystems and commands are defined here...
-  public SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
   XboxController operatorController = new XboxController(1);
   PS5Controller driverController = new PS5Controller(0);
@@ -62,9 +62,6 @@ public class RobotContainer
     // Configure the trigger bindings
     configureBindings();
 
-    /**
-     * X and y are swapped
-     */
     TeleopDrive closedFieldRel = new TeleopDrive(
         drivebase,
         () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
@@ -100,7 +97,6 @@ public class RobotContainer
   private void configureBindings()
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    new AutoFactory();
 //    new Trigger(driverController::getCircleButton).whileTrue(AutoFactory.driveUpToTarget(drivebase.getPose().getTranslation()));
     new Trigger(driverController::getCircleButton).whileTrue(AutoFactory.forward());
     new Trigger(driverController::getTriangleButton).whileTrue(AutoFactory.driveUpToTarget());

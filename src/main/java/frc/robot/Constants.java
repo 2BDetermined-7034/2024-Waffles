@@ -25,6 +25,15 @@ public final class Constants
 {
 
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+
+  //ClimbSubsystem Constants
+  public static final class Climb {
+    public static final int cwMotorID = 255;
+    public static final int ccwMotorID = 256;
+    public static final double MAX_CLIMB_VELOCITY = 0.5;
+    public static final double CLIMB_MOTOR_TARGET_POSITION_REVOLUTIONS = 2.0;
+    public static final double CLIMB_MOTOR_START_POSITION_REVOLUTIONS = 0.0; //I don't think we need this btw
+  }
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
 
@@ -42,6 +51,12 @@ public final class Constants
 
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
+  }
+
+  public static class Speeds {
+    public static final double TURN_SPEED = 2.5; //aaryan pls dont set it to 5
+    /** 1 is <b><i>highly<i/><b/> recommended!*/
+    public static final double MOVEMENT_SPEED = 1;
   }
 
   public static class OperatorConstants
