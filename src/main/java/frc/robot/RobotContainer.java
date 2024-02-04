@@ -111,6 +111,8 @@ public class RobotContainer
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
 
     new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
+
+
   }
 
   /**
@@ -130,7 +132,7 @@ public class RobotContainer
     //drivebase.setDefaultCommand();
   }
 
-  public void setMotorBrake(boolean brake)
+  public void setDriveMotorBrake(boolean brake)
   {
     drivebase.setMotorBrake(brake);
   }
