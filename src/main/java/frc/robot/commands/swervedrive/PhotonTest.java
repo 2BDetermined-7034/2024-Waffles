@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.vision.Photonvision;
 import frc.robot.utils.SubsystemLogging;
 
-
 public class PhotonTest extends Command implements SubsystemLogging {
     private final Photonvision photonvision;
 

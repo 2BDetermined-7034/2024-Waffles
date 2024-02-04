@@ -11,6 +11,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -37,6 +39,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+
 
 public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
 {
@@ -87,7 +90,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
-
     setupPathPlanner();
 
     try {
@@ -424,10 +426,16 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
         Pose3d robotPose = estimatedPose.get().estimatedPose;
         Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
 
+        double distance = photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
 
+        //Scale confidence in Vision Measurements based on distance
+        swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));
+
+        Pose2d previousPose = swerveDrive.getPose();
         swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
-//        swerveDrive.setGyroOffset(robotPose.getRotation());
 
+        //Transform2d smoothTransform = new Transform2d(new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(0.0)), swerveDrive.getPose().times(1.0 - distance));
+        //swerveDrive.resetOdometry(previousPose.times(distance).plus(smoothTransform));
       }
     }
 

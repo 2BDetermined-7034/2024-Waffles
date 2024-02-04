@@ -98,7 +98,7 @@ public class RobotContainer
   {
     new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
 //    new Trigger(driverController::getCircleButton).whileTrue(AutoFactory.driveUpToTarget(drivebase.getPose().getTranslation()));
-    new Trigger(driverController::getCircleButton).whileTrue(AutoFactory.forward());
+    new Trigger(driverController::getCircleButton).whileTrue(AutoFactory.pointTowardsTag(7, drivebase));
     new Trigger(driverController::getTriangleButton).whileTrue(AutoFactory.driveUpToTarget());
 
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
