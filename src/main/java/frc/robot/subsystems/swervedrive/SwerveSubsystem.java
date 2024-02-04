@@ -40,6 +40,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import static frc.robot.RobotContainer.backCamera;
+import static frc.robot.RobotContainer.frontCamera;
+
 
 public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
 {
@@ -54,7 +57,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public        double      maximumSpeed = Units.feetToMeters(14.5);
 
   AprilTagFieldLayout aprilTagFieldLayout = null;
-  Photonvision photonvision = RobotContainer.photon;
   PhotonPoseEstimator photonPoseEstimator;
 
   // TODO: EXPERIMENTAL
@@ -92,17 +94,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     setupPathPlanner();
 
-    try {
-      aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-      /*
-      The camera relative to the robot
-       */
-      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,Math.PI));
-      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonvision.getCamera(), robotToCam);
-
-    } catch(IOException e) {
-      DriverStation.reportError(e.toString(), true);
-    }
 
     angleRelativeTo = swerveDrive.getYaw();
 
@@ -414,30 +405,30 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
 
+  /**
+   *
+   * @param camera PhotonVision camera
+   * @description uses the camera to process robot pose
+   */
+  private void processCamera(Photonvision camera) {
+    if(camera.hasTargets()) {
+      Optional<EstimatedRobotPose> estimatedPose = camera.getEstimatedGlobalPose(getPose());
+
+      if(estimatedPose.isPresent()) {
+        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+        double distance = camera.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+
+        swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance, distance, 0.01));
+        swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
+      }
+    }
+  }
   @Override
   public void periodic()
   {
+    processCamera(frontCamera);
+    processCamera(backCamera);
 
-    if(photonvision.hasTargets()) {
-
-      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
-
-      if(estimatedPose.isPresent()) {
-        Pose3d robotPose = estimatedPose.get().estimatedPose;
-        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-
-        double distance = photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-
-        //Scale confidence in Vision Measurements based on distance
-        swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));
-
-        Pose2d previousPose = swerveDrive.getPose();
-        swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
-
-        //Transform2d smoothTransform = new Transform2d(new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(0.0)), swerveDrive.getPose().times(1.0 - distance));
-        //swerveDrive.resetOdometry(previousPose.times(distance).plus(smoothTransform));
-      }
-    }
 
     swerveDrive.updateOdometry();
     log("Swerve States", swerveDrive.getStates());

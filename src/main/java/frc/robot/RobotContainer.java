@@ -7,6 +7,9 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -43,7 +46,9 @@ public class RobotContainer
 
 //  public static Limelight limelight= new Limelight();
 
-  public static Photonvision photon = new Photonvision();
+  public static Photonvision frontCamera = new Photonvision(Constants.PhotonVision.frontCameraName, new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,Math.PI)));
+  public static Photonvision backCamera = new Photonvision(Constants.PhotonVision.backCameraName, new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0)));
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
