@@ -22,6 +22,7 @@ import frc.robot.commands.drivebase.TeleopDrive;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.vision.Photonvision;
 
 import java.io.File;
 
@@ -33,6 +34,9 @@ import java.io.File;
 public class RobotContainer
 {
   private final SendableChooser<Command> autoChooser;
+
+  public static Photonvision photon = new Photonvision();
+
 
 
   // The robot's subsystems and commands are defined here...
