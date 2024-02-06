@@ -25,7 +25,7 @@ public class ShooterCommand extends Command {
 
 	@Override
 	public void execute() {
-		//new ShooterSubsystem().setAngleTalonPosition(getEquationValue(0)); //TODO: find the distance and replace the parameter with it.
+		//new ShooterSubsystem().setAngleTalonPosition(getDistanceToAngle(0)); //TODO: find the distance and replace the parameter with it.
 		//shooter.setVelocityTalon(0.8);
 		//shooter.setIndexerNeo550Speed(0.3);
 		shooter.setAngleTalonVelocity(0.05);
