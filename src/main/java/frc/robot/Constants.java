@@ -28,8 +28,8 @@ public final class Constants
 
   //ClimbSubsystem Constants
   public static final class Climb {
-    public static final int cwMotorID = 255;
-    public static final int ccwMotorID = 256;
+    public static final int motorAID = 255;
+    public static final int motorBID = 256;
     public static final double MAX_CLIMB_VELOCITY = 0.5;
     public static final double CLIMB_MOTOR_TARGET_POSITION_REVOLUTIONS = 2.0;
     public static final double CLIMB_MOTOR_START_POSITION_REVOLUTIONS = 0.0; //I don't think we need this btw
