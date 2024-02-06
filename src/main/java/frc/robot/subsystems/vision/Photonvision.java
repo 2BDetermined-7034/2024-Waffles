@@ -35,14 +35,10 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
     }
 
 
-    /**
-     *
-     * @param prevEstimatedRobotPose Robot's current pose
-     * @return The Estimated Robot pose
-     */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        poseEstimator.setReferencePose(prevEstimatedRobotPose);
-        return poseEstimator.update();
+
+
+    public PhotonPoseEstimator getPoseEstimator() {
+        return poseEstimator;
     }
 
     /**

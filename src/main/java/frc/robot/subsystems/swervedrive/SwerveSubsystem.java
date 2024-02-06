@@ -22,10 +22,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.vision.Photonvision;
 import frc.robot.utils.SubsystemLogging;
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -407,12 +409,21 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
 
   /**
    *
+   * @param prevEstimatedRobotPose Robot's current pose
+   * @return The Estimated Robot pose
+   */
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Photonvision camera, Pose2d prevEstimatedRobotPose) {
+    camera.getPoseEstimator().setReferencePose(prevEstimatedRobotPose);
+    return camera.getPoseEstimator().update();
+  }
+  /**
+   *
    * @param camera PhotonVision camera
    * @description uses the camera to process robot pose
    */
   private void processCamera(Photonvision camera) {
     if(camera.hasTargets()) {
-      Optional<EstimatedRobotPose> estimatedPose = camera.getEstimatedGlobalPose(getPose());
+      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(camera, getPose());
 
       if(estimatedPose.isPresent()) {
         Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
@@ -423,6 +434,9 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       }
     }
   }
+
+
+
   @Override
   public void periodic()
   {
