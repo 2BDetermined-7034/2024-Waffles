@@ -11,40 +11,34 @@ import frc.robot.Constants;
 import static frc.robot.Constants.Climb.*;
 
 /*
-*	Climbing Subsystem :
-* 	Motors		|	Function
-* 	-----------------------------
-* 	cwMotor 	|	Clockwise motor for one of the coils
-* 	ccwMotor	|	Counter-Clockwise motor for one of the coils
-*
-* 	NOTE:
-* 	The actual direction of the motor doesn't matter, as long as they are spinning in opposite directions.
-*/
+ *	Climbing Subsystem :
+ * 	Motors		|	Function
+ * 	-----------------------------
+ * 	motorA	 	|	Runs on a PID to reach the target position
+ * 	motorB		|	Follows motorA
+ */
 public class ClimbSubsystem extends SubsystemBase {
-	protected CANSparkMax cwMotor, ccwMotor;
-	protected PIDController cwController, ccwController;
-	protected RelativeEncoder cwEncoder, ccwEncoder;
+	protected CANSparkMax motorA, motorB;
+	protected PIDController controller;
+	protected RelativeEncoder encoderA, encoderB;
 	public double targetPosition;
 
 	public ClimbSubsystem() {
-		cwMotor = new CANSparkMax(cwMotorID, CANSparkLowLevel.MotorType.kBrushless);
-		ccwMotor = new CANSparkMax(ccwMotorID, CANSparkLowLevel.MotorType.kBrushless);
+		motorA = new CANSparkMax(motorAID, CANSparkLowLevel.MotorType.kBrushless);
+		motorB = new CANSparkMax(motorBID, CANSparkLowLevel.MotorType.kBrushless);
 
 		final boolean swapInverted = true; //Modify if motors are running in the wrong direction
-		cwMotor.setInverted(swapInverted);
-		ccwMotor.setInverted(!swapInverted);
+		motorA.setInverted(swapInverted);
+		motorB.setInverted(!swapInverted);
 
-		cwEncoder = cwMotor.getEncoder();
-		ccwEncoder = ccwMotor.getEncoder();
+		encoderA = motorA.getEncoder();
+		encoderB = motorB.getEncoder();
 
-		cwEncoder.setPosition(0.0);
-		ccwEncoder.setPosition(0.0);
+		encoderA.setPosition(0.0);
+		encoderB.setPosition(0.0);
 
-		cwController = new PIDController(0.5, 0.0, 0.3);
-		ccwController = new PIDController(0.5, 0.0, 0.3);
-
-		cwController.setTolerance(0.1);
-		ccwController.setTolerance(0.1);
+		controller = new PIDController(0.5, 0.0, 0.3);
+		controller.setTolerance(0.1);
 
 		targetPosition = CLIMB_MOTOR_START_POSITION_REVOLUTIONS;
 	}
@@ -52,10 +46,8 @@ public class ClimbSubsystem extends SubsystemBase {
 	//Useless
 	@Override
 	public void periodic() {
-		if (!cwController.atSetpoint())
-			cwMotor.set(cwController.calculate(cwEncoder.getPosition(), targetPosition));
-		if (!ccwController.atSetpoint())
-			ccwMotor.set(ccwController.calculate(ccwEncoder.getPosition(), targetPosition));
+		if (!controller.atSetpoint())
+			motorA.set(controller.calculate(encoderA.getPosition(), targetPosition));
 	}
 
 	//Extend the climbing arm
@@ -69,9 +61,6 @@ public class ClimbSubsystem extends SubsystemBase {
 	}
 
 	public boolean isFinished() {
-		return cwController.atSetpoint() && ccwController.atSetpoint();
+		return controller.atSetpoint();
 	}
 }
-
-
-
