@@ -21,6 +21,10 @@ public class ShooterCommand extends Command implements SubsystemLogging {
 		addRequirements(shooter);
 	}
 
+	public double getDistanceToAngle(double distance) {
+		return Math.atan((80.57-23.365)/(27+distance));
+	}
+
 	@Override
 	public void execute() {
 		//shooter.setVelocityTalon(0.3);
@@ -31,8 +35,12 @@ public class ShooterCommand extends Command implements SubsystemLogging {
 		double distance = -1; // default distance for no speaker target
 		if(!speakerTargetList.isEmpty()) {
 			distance = speakerTargetList.get(0).getBestCameraToTarget().getTranslation().getNorm();
+
+			shooter.setAngleFromTag(speakerTargetList.get(0).getBestCameraToTarget().getTranslation());
 		}
 		log("Shooter Distance", distance);
+
+		log("Shooter Angle", shooter.angleMotorPosition);
 //		shooter.setAngleTalonPosition(1.0);
 //		shooter.setVelocityTalon(0.4);
 //		shooter.setIndexerNeo550Speed(0.6);

@@ -12,6 +12,8 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.SubsystemLogging;
 
@@ -108,6 +110,25 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		angleMotorPosition = MathUtil.clamp(position, 0, 3.5);
 	}
 
+
+	/**
+	 * THIS DOES NOT WORK!!!
+	 * TODO Fix scaling and get actual relative offset aside from 1.0 for zed.
+	 * @param relativeTagPosition
+	 */
+	public void setAngleFromTag(Translation3d relativeTagPosition) {
+		//TODO Figure out the distance from the target vertex to the tag
+		Translation3d target = relativeTagPosition.plus(new Translation3d(0.0, 0.0, 1.0));
+
+		//Yes, min is greater than max. min is the base measurement
+		final double minAngle = Math.toRadians(51.8);
+		final double maxAngle = Math.toRadians(32.1);
+
+		double angle = (minAngle - Math.atan(target.getZ() / Math.abs(target.getX())));// / Math.PI / 2.0;
+		log("Radian Target angle", angle);
+		double scale = 3.5 / (minAngle - maxAngle);
+		setAngleTalonPosition(angle * scale);
+	}
 
 	/**
 	 * Sets Angle Talon's Velocity as a percent[-1.0, 1.0]
