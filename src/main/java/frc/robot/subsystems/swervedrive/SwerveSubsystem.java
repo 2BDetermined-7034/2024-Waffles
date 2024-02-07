@@ -11,10 +11,9 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -23,6 +22,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.vision.Photonvision;
 import frc.robot.utils.SubsystemLogging;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
@@ -39,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+
 public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
 {
 
@@ -52,7 +54,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public        double      maximumSpeed = Units.feetToMeters(14.5);
 
   AprilTagFieldLayout aprilTagFieldLayout = null;
-//  Photonvision photonvision = RobotContainer.photon;
+  Photonvision photonvision = RobotContainer.photon;
   PhotonPoseEstimator photonPoseEstimator;
 
   // TODO: EXPERIMENTAL
@@ -88,7 +90,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
-
     setupPathPlanner();
 
     try {
@@ -96,8 +97,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       /*
       The camera relative to the robot
        */
-//      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0));
-//      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonvision.getCamera(), robotToCam);
+      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,Math.PI));
+      photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonvision.getCamera(), robotToCam);
 
     } catch(IOException e) {
       DriverStation.reportError(e.toString(), true);
@@ -113,33 +114,33 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public void setupPathPlanner()
   {
     AutoBuilder.configureHolonomic(
-        this::getPose, // Robot pose supplier
-        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-        this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         new PIDConstants(5.0, 0.0, 0.0),
-                                         // Translation PID constants
-                                         new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
-                                                          swerveDrive.swerveController.config.headingPIDF.i,
-                                                          swerveDrive.swerveController.config.headingPIDF.d),
-                                         // Rotation PID constants
-                                         4.5,
-                                         // Max module speed, in m/s
-                                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
-                                         // Drive base radius in meters. Distance from robot center to furthest module.
-                                         new ReplanningConfig()
-                                         // Default path replanning config. See the API for the options here
-        ),
-        () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-                    var alliance = DriverStation.getAlliance();
-                    return alliance.filter(value -> value == DriverStation.Alliance.Red).isPresent();
-                },
-        this // Reference to this subsystem to set requirements
-                                  );
+            this::getPose, // Robot pose supplier
+            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                    new PIDConstants(5.0, 0.0, 0.0),
+                    // Translation PID constants
+                    new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
+                            swerveDrive.swerveController.config.headingPIDF.i,
+                            swerveDrive.swerveController.config.headingPIDF.d),
+                    // Rotation PID constants
+                    4.5,
+                    // Max module speed, in m/s
+                    swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
+                    // Drive base radius in meters. Distance from robot center to furthest module.
+                    new ReplanningConfig()
+                    // Default path replanning config. See the API for the options here
+            ),
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+              var alliance = DriverStation.getAlliance();
+              return alliance.filter(value -> value == DriverStation.Alliance.Red).isPresent();
+            },
+            this // Reference to this subsystem to set requirements
+    );
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
@@ -196,9 +197,9 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public void drive(Translation2d translation, double rotation, boolean fieldRelative)
   {
     swerveDrive.drive(translation,
-                      rotation,
-                      fieldRelative,
-                      false); // Open loop is disabled since it shouldn't be used most of the time.
+            rotation,
+            fieldRelative,
+            false); // Open loop is disabled since it shouldn't be used most of the time.
   }
 
   /**
@@ -321,11 +322,11 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     xInput = Math.pow(xInput, 3);
     yInput = Math.pow(yInput, 3);
     return swerveDrive.swerveController.getTargetSpeeds(xInput,
-                                                        yInput,
-                                                        headingX,
-                                                        headingY,
-                                                        getHeading().getRadians(),
-                                                        maximumSpeed);
+            yInput,
+            headingX,
+            headingY,
+            getHeading().getRadians(),
+            maximumSpeed);
   }
 
   /**
@@ -341,10 +342,10 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     xInput = Math.pow(xInput, 3);
     yInput = Math.pow(yInput, 3);
     return swerveDrive.swerveController.getTargetSpeeds(xInput,
-                                                        yInput,
-                                                        angle.getRadians(),
-                                                        getHeading().getRadians(),
-                                                        maximumSpeed);
+            yInput,
+            angle.getRadians(),
+            getHeading().getRadians(),
+            maximumSpeed);
   }
 
   /**
@@ -417,19 +418,26 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public void periodic()
   {
 
-//    if(photonvision.hasTargets()) {
-//      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
-//
-//      if(estimatedPose.isPresent()) {
-//        //Pose3d robotPose = estimatedPose.get().estimatedPose;
-//        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-//
-//
-//        swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
-//        //swerveDrive.setGyroOffset(new Rotation3d(0,0,swerveDrive.getOdometryHeading().getDegrees()));
-//
-//      }
-//    }
+    if(photonvision.hasTargets()) {
+
+      Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(getPose());
+
+      if(estimatedPose.isPresent()) {
+        Pose3d robotPose = estimatedPose.get().estimatedPose;
+        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+
+        double distance = photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+
+        //Scale confidence in Vision Measurements based on distance
+        swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));
+
+        Pose2d previousPose = swerveDrive.getPose();
+        swerveDrive.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), swerveDrive.getOdometryHeading()), estimatedPose.get().timestampSeconds);
+
+        //Transform2d smoothTransform = new Transform2d(new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(0.0)), swerveDrive.getPose().times(1.0 - distance));
+        //swerveDrive.resetOdometry(previousPose.times(distance).plus(smoothTransform));
+      }
+    }
 
     swerveDrive.updateOdometry();
     log("Swerve States", swerveDrive.getStates());

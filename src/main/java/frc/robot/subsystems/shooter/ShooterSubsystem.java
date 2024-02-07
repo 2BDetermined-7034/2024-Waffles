@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.SubsystemLogging;
 
@@ -16,6 +17,10 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	private final TalonFX angleTalon;
 	private final CANSparkMax indexerNeo550;
 
+	public final double homeAngle = 0;
+	public final double maxAngle = 0.2;
+
+
 	/**
 	 * Shooter Subsystem for Waffles Consisting of a Velocity Talon,
 	 * Angle Adjustment Talon, and an Indexing Neo550
@@ -24,16 +29,16 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		//TODO set Motor IDs in Constants
 		this.velocityTalon = new TalonFX(shooterVelocityTalonID);
 		this.angleTalon = new TalonFX(shooterAngleTalonID);
-		velocityTalon.setNeutralMode(NeutralModeValue.Brake);
+		velocityTalon.setNeutralMode(NeutralModeValue.Coast);
 		angleTalon.setNeutralMode(NeutralModeValue.Brake);
 
-		//velocityTalon.configNeutralDeadband(0.001);
 
-//		this.angleTalon = new TalonSRX(shooterAngleTalonID);
-//		this.velocityTalon.setNeutralMode(NeutralMode.Brake);
-//		angleTalon.configNeutralDeadband(0.001);
 //		//init encoder to 0 position on boot
-//		angleTalon.setSelectedSensorPosition(0);
+		angleTalon.setPosition(0);
+
+
+		// robot init, set slot 0 gains
+
 
 		this.indexerNeo550 = new CANSparkMax(shooterNeo550ID, CANSparkLowLevel.MotorType.kBrushless);
 		indexerNeo550.setIdleMode(CANSparkBase.IdleMode.kBrake);
@@ -48,7 +53,9 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 
 
 	public void updateLogging() {
-
+		log("Shooter Talon Velocity", getVelocityTalonVelocity());
+		log("Angle Talon Velocity", getAngleVelocity());
+		log("Angle Talon Position", getAnglePosition());
 	}
 
 
@@ -58,7 +65,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @param targetVelocity velocity
 	 */
 	public void setVelocityTalon(double targetVelocity) {
-		velocityTalon.set(targetVelocity);
+		velocityTalon.set(MathUtil.clamp(targetVelocity, -1, 1));
 	}
 
 	/**
@@ -71,21 +78,21 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 
 	/**
 	 * Sets the position of the Angle Talon Motor in rotations
+	 *
 	 * TODO tune ff
 	 * @param position encoder position
 	 */
 	public void setAngleTalonPosition(double position) {
-		double feedForward = 0.00;
 		angleTalon.setPosition(position);
 	}
 
 
 	/**
-	 * Sets Angle Talon's Velocity in rpm
+	 * Sets Angle Talon's Velocity as a percent[-1.0, 1.0]
 	 * @param targetVelocity velocity
 	 */
 	public void setAngleTalonVelocity(double targetVelocity) {
-		angleTalon.set(targetVelocity);
+		angleTalon.set(MathUtil.clamp(targetVelocity, -1, -1));
 	}
 
 	public double getAnglePosition() {
@@ -104,7 +111,5 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * Sets Indexer Gearbox Neo550 Speed as a Percent [-1.0 - 1.0]
 	 * @param speed percent velocity
 	 */
-	public void setIndexerNeo550Speed(double speed) {
-		indexerNeo550.set(speed);
-	}
+	public void setIndexerNeo550Speed(double speed) { indexerNeo550.set(MathUtil.clamp(speed, -1, 1)); }
 }

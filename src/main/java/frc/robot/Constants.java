@@ -71,8 +71,8 @@ public final class Constants
   }
 
   public static final class Shooter {
-    public static final int shooterVelocityTalonID = 5;
-    public static final int shooterAngleTalonID = 6;
+    public static final int shooterVelocityTalonID = 6  ;
+    public static final int shooterAngleTalonID = 5;
     public static final int shooterNeo550ID = 9;
   }
 }
