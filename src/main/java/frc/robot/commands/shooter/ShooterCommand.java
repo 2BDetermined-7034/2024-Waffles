@@ -1,41 +1,43 @@
 package frc.robot.commands.shooter;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class ShooterCommand extends Command {
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.vision.Photonvision;
+import frc.robot.utils.SubsystemLogging;
+import org.opencv.photo.Photo;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+public class ShooterCommand extends Command implements SubsystemLogging {
 	private ShooterSubsystem shooter;
-	private final PIDController angleController = new PIDController(0.4,0,0);
+	private Photonvision photon = RobotContainer.photon;
+
 	public ShooterCommand(ShooterSubsystem shooter) {
 		this.shooter = shooter;
-
-		angleController.setTolerance(0.05);
-
 		addRequirements(shooter);
-	}
-	/**Gets the equation of the hypotenuse of a triangle for the purpose of aiming based on trigonometry.
-	 *<p>
-	 *Equation = arctan((80.57-h)/(27+d))
-	 *
-	 *
-	 * */
-	public double getDistanceToAngle(double distance) {
-		return Math.atan(57.205/(27+distance));
 	}
 
 	@Override
 	public void execute() {
-		//new ShooterSubsystem().setAngleTalonPosition(getDistanceToAngle(0)); //TODO: find the distance and replace the parameter with it.
-		//shooter.setVelocityTalon(0.8);
-		//shooter.setIndexerNeo550Speed(0.3);
-		shooter.setAngleTalonVelocity(0.05);
+		//shooter.setVelocityTalon(0.3);
+		//shooter.setAngleTalonVelocity(0.05);
 
+		//gets targets id 7, or 15 for speaker distance
+		List<PhotonTrackedTarget> speakerTargetList = photon.targets().stream().filter((target) -> target.getFiducialId() == 5 || target.getFiducialId() == 15).toList();
+		double distance = -1; // default distance for no speaker target
+		if(!speakerTargetList.isEmpty()) {
+			distance = speakerTargetList.get(0).getBestCameraToTarget().getTranslation().getNorm();
+		}
+		log("Shooter Distance", distance);
+//		shooter.setAngleTalonPosition(1.0);
+//		shooter.setVelocityTalon(0.4);
+//		shooter.setIndexerNeo550Speed(0.6);
 	}
 
-	@Override
-	public boolean isFinished() {
-		return angleController.atSetpoint();
-	}
 	@Override
 	public void end(boolean interrupted) {
 		shooter.setVelocityTalon(0);

@@ -1,6 +1,11 @@
 package frc.robot.subsystems.shooter;
 
 
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase;
@@ -16,9 +21,11 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	private final TalonFX velocityTalon;
 	private final TalonFX angleTalon;
 	private final CANSparkMax indexerNeo550;
+	private final PositionVoltage anglePositionVoltage;
 
 	public final double homeAngle = 0;
 	public final double maxAngle = 0.2;
+	public double angleMotorPosition = 0;
 
 
 	/**
@@ -29,24 +36,34 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		//TODO set Motor IDs in Constants
 		this.velocityTalon = new TalonFX(shooterVelocityTalonID);
 		this.angleTalon = new TalonFX(shooterAngleTalonID);
+
 		velocityTalon.setNeutralMode(NeutralModeValue.Coast);
+
+		// Angle Talon
 		angleTalon.setNeutralMode(NeutralModeValue.Brake);
 
+		Slot0Configs angleMotorPID = new Slot0Configs();
+		angleMotorPID.kP = 1;
+		angleMotorPID.kI = 0;
+		angleMotorPID.kD = 0;
+		angleMotorPID.kS = 0.24;
 
-//		//init encoder to 0 position on boot
-		angleTalon.setPosition(0);
+		angleTalon.getConfigurator().apply(angleMotorPID);
 
+		anglePositionVoltage = new PositionVoltage(0);
 
 		// robot init, set slot 0 gains
-
-
 		this.indexerNeo550 = new CANSparkMax(shooterNeo550ID, CANSparkLowLevel.MotorType.kBrushless);
 		indexerNeo550.setIdleMode(CANSparkBase.IdleMode.kBrake);
+
+		//init encoder to 0 position on boot
+		angleTalon.setPosition(0);
 	}
 
 	@Override
 	public void periodic() {
-
+		anglePositionVoltage.Position = angleMotorPosition;
+		angleTalon.setControl(anglePositionVoltage);
 
 		updateLogging();
 	}
@@ -68,6 +85,11 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		velocityTalon.set(MathUtil.clamp(targetVelocity, -1, 1));
 	}
 
+
+
+	public void zeroAngleTalon() {
+		// TODO implement if possible
+	}
 	/**
 	 * Returns Velocity Talon's velocity in rpm
 	 * @return ShooterVelocity
@@ -83,7 +105,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @param position encoder position
 	 */
 	public void setAngleTalonPosition(double position) {
-		angleTalon.setPosition(position);
+		angleMotorPosition = MathUtil.clamp(position, 0, 3.5);
 	}
 
 
@@ -92,7 +114,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @param targetVelocity velocity
 	 */
 	public void setAngleTalonVelocity(double targetVelocity) {
-		angleTalon.set(MathUtil.clamp(targetVelocity, -1, -1));
+		angleTalon.set(MathUtil.clamp(targetVelocity, -1, 1));
 	}
 
 	public double getAnglePosition() {

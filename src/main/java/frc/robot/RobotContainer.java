@@ -47,7 +47,6 @@ public class RobotContainer
 
 //  public static Limelight limelight= new Limelight();
 
-//  public static Photonvision photon = new Photonvision();
 
   public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public static ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem);
@@ -111,8 +110,6 @@ public class RobotContainer
     new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
 
     new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
-
-
   }
 
   /**
