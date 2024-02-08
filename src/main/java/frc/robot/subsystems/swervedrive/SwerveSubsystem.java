@@ -53,6 +53,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
+  private PhotonPoseEstimator poseEstimator = null;
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
@@ -95,6 +96,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     setupPathPlanner();
+
 
 
     angleRelativeTo = swerveDrive.getYaw();
@@ -407,6 +409,15 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
 
+  private void setupPhotonPoseEstimator(PhotonCamera camera, Transform3d cameraToRobot) {
+    try {
+      AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraToRobot);
+    } catch(IOException e) {
+      DriverStation.reportError(e.toString(), true);
+    }
+  }
+
   /**
    *
    * @param prevEstimatedRobotPose Robot's current pose
@@ -421,6 +432,8 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
    * @param camera PhotonVision camera
    * @description uses the camera to process robot pose
    */
+
+
   private void processCamera(Photonvision camera) {
     if(camera.hasTargets()) {
       Optional<EstimatedRobotPose> estimatedPose = getEstimatedGlobalPose(camera, getPose());
@@ -435,11 +448,10 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     }
   }
 
-
-
   @Override
   public void periodic()
   {
+
     processCamera(frontCamera);
     processCamera(backCamera);
 

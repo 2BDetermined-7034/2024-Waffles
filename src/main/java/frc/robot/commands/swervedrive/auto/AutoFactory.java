@@ -34,7 +34,7 @@ public class AutoFactory {
     }
     public static Command rotate(SwerveSubsystem swerve) {
         Pose2d targetPose = new Pose2d(new Translation2d(swerve.getPose().getX(), swerve.getPose().getY()), new Rotation2d(Math.PI));
-        Photonvision.enableVision(false);
+//        Photonvision.enableVision(false);
         PathConstraints constraints = new PathConstraints(
                 1, 1,
                 Units.degreesToRadians(540), Units.degreesToRadians(720));
@@ -43,7 +43,8 @@ public class AutoFactory {
                 constraints,
                 0.0, // Goal end velocity in meters/sec
                 0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-        ).andThen(new InstantCommand(() -> Photonvision.enableVision(true)));
+        );
+        // .andThen(new InstantCommand(() -> Photonvision.enableVision(true)));
     }
 
     public static Command pointTowardsTag(int aprilTagIndex, SwerveSubsystem swerve) {
@@ -55,7 +56,7 @@ public class AutoFactory {
 
                 double rotation = Math.atan((tagPosition.getX() - swerve.getPose().getX()) / (tagPosition.getY() - swerve.getPose().getY()));
                 Pose2d targetPose = new Pose2d(new Translation2d(swerve.getPose().getX(), swerve.getPose().getY()), new Rotation2d(rotation));
-                Photonvision.enableVision(false);
+//                Photonvision.enableVision(false);
                 PathConstraints constraints = new PathConstraints(
                         0, 0,
                         Units.degreesToRadians(540), Units.degreesToRadians(720));
@@ -64,7 +65,8 @@ public class AutoFactory {
                         constraints,
                         0.0, // Goal end velocity in meters/sec
                         0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-                ).andThen(new InstantCommand(() -> Photonvision.enableVision(true)));
+                );
+                // .andThen(new InstantCommand(() -> Photonvision.enableVision(true)));
             } else {
                 DriverStation.reportError("The tag failed to load in: pointTowardsTag", true);
                 return null;

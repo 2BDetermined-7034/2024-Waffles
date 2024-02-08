@@ -29,8 +29,8 @@ public final class Constants
   //ClimbSubsystem Constants
 
   public static final class PhotonVision {
-    public static final String frontCameraName = "Arducam_OV9281_USB_Camera";
-    public static final String backCameraName = "USB_Camera";
+    public static final String backCameraName = "ShooterCam";
+    public static final String frontCameraName = "IntakeCam";
   }
   public static final class Climb {
     public static final int cwMotorID = 255;

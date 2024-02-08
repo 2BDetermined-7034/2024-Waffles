@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class Photonvision extends SubsystemBase implements SubsystemLogging {
-    static boolean enablePhotonInstances = true; //Nyahaha
-    private final PhotonPipelineResult pipelineResult;
+    private PhotonPipelineResult pipelineResult;
     private PhotonPoseEstimator poseEstimator;
+    private final PhotonCamera camera;
 
     public Photonvision(String cameraName, Transform3d cameraToRobot) {
-        PhotonCamera camera = new PhotonCamera(cameraName);
+        this.camera = new PhotonCamera(cameraName);
         pipelineResult = new PhotonPipelineResult();
 
         try {
@@ -35,6 +35,9 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
     }
 
 
+    public PhotonCamera getCamera() {
+        return camera;
+    }
 
 
     public PhotonPoseEstimator getPoseEstimator() {
@@ -59,11 +62,7 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
 
     @Override
     public void periodic() {
-
-
+        pipelineResult = camera.getLatestResult();
     }
 
-    public static void enableVision(boolean enable) {
-        enablePhotonInstances = enable;
-    }
 }
