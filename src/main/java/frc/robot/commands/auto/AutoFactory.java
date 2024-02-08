@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
 
@@ -81,4 +82,14 @@ public class AutoFactory {
 
     }
 
+    public static Command pointTowardsSpeakerTag(SwerveSubsystem swerveSubsystem) {
+        if (DriverStation.getAlliance().isPresent()) {
+            if (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red))
+                return pointTowardsTag(4, swerveSubsystem);
+            else
+                return pointTowardsTag(5, swerveSubsystem);
+        }
+
+        return new WaitCommand(0.0);
+    }
 }

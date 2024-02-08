@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.auto.AutoFactory;
+import frc.robot.commands.drivebase.ControllerDrive;
 import frc.robot.commands.drivebase.TeleopDrive;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -49,7 +51,7 @@ public class RobotContainer
 
 
   public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  public static ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem);
+  public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -82,13 +84,13 @@ public class RobotContainer
 
             () -> operatorController.getRightX(), () -> true);
 
-//    drivebase.setDefaultCommand(new ControllerDrive(drivebase,
-//            () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-//            () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-//            () -> driverController.getRawAxis(2), true));
-//
+    drivebase.setDefaultCommand(new ControllerDrive(drivebase,
+            () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+            () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+            () -> driverController.getRawAxis(2), true));
 
-//    drivebase.setDefaultCommand(closedFieldRel);
+
+    drivebase.setDefaultCommand(closedFieldRel);
   }
 
 
@@ -103,12 +105,15 @@ public class RobotContainer
 
   private void configureBindings()
   {
-    new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    //new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
    // new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
 
-    new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
+    //new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
+    new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(drivebase::zeroGyro));
 
     new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
+
+    new Trigger(driverController::getL1Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
   }
 
   /**

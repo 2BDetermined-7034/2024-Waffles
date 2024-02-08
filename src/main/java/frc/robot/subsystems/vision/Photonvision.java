@@ -14,7 +14,7 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
     private PhotonPipelineResult pipelineResult;
 
     public Photonvision() {
-        camera = new PhotonCamera("USB_Camera");
+        camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
         pipelineResult = new PhotonPipelineResult();
     }
 

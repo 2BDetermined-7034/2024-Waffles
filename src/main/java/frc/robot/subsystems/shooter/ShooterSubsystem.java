@@ -1,18 +1,14 @@
 package frc.robot.subsystems.shooter;
 
 
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.SubsystemLogging;
@@ -75,6 +71,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		log("Shooter Talon Velocity", getVelocityTalonVelocity());
 		log("Angle Talon Velocity", getAngleVelocity());
 		log("Angle Talon Position", getAnglePosition());
+		log("Angle Talon Goal", angleMotorPosition);
 	}
 
 
@@ -101,15 +98,44 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	}
 
 	/**
-	 * Sets the position of the Angle Talon Motor in rotations
-	 *
-	 * TODO tune ff
+	 * Sets the position of the Angle Talon Motor in rotations<br>
+	 * NOTE: This is in motor rotations, which,
+	 * due to the magic of gears are not equivalent to a rotation of the shooter installation.<br>
+	 * <b><i>You should probably use setPositionDegrees instead.</i></b>
 	 * @param position encoder position
 	 */
-	public void setAngleTalonPosition(double position) {
+	public void setPosition(double position) {
 		angleMotorPosition = MathUtil.clamp(position, 0, 3.5);
 	}
 
+	/**
+	 * Sets the position of the angle Falcon in degrees
+	 * (relative to the horizon, positive to tilt the shooter back relative to the horizon,
+	 * negative to tilt the shooter forwards relative to the horizon).
+	 * @param degrees
+	 */
+	public void setPositionDegrees(double degrees){
+		setPosition(((-degrees + angleAtHorizon) / 360.0) * angleGearRatio);
+	}
+
+	/**
+	 * <b><i>ONLY WORKS WITHIN 6 FEET (1.8 METERS)</i></b><br>
+	 * Uses an equation to calculate the necessary angle to shoot given distance from the shooter.
+	 * @param distance Distance (in meters) from the speaker
+	 * @return Angle to shoot into the shooter at (in degrees)
+	 */
+	public double distanceToAngleWithin(double distance) {
+		return Math.toDegrees(Math.atan((2.046-(0.457 + 0.114 * Math.sin(0.423480295541)))/distance));
+		/*
+		Here's what all the stupid numbers mean:
+		Numerator: 2.046: height of the speaker (meters)
+				   0.457: height of the shooter (meters)
+				   0.114: distance from measuring point (axle of talon) to shooter exit (between the two rollers) (meters)
+				   0.4234: average angle between the horizon and back-most point (in radians)
+				           together with Math.sin() and the radius it creates an estimate for the height offset caused by rotation
+		Denominator: distance from the point between the two rollers to the middle of the speaker
+		 */
+	}
 
 	/**
 	 * THIS DOES NOT WORK!!!
@@ -118,16 +144,23 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 */
 	public void setAngleFromTag(Translation3d relativeTagPosition) {
 		//TODO Figure out the distance from the target vertex to the tag
-		Translation3d target = relativeTagPosition.plus(new Translation3d(0.0, 0.0, 1.0));
+		double distance = relativeTagPosition.toTranslation2d().getNorm();
+		log("Distance", distance);
 
 		//Yes, min is greater than max. min is the base measurement
-		final double minAngle = Math.toRadians(51.8);
-		final double maxAngle = Math.toRadians(32.1);
+		// I have no idea what this is for so I'm, uhh, not gonna use it
+//		final double minAngle = Math.toRadians(51.8);
+//		final double maxAngle = Math.toRadians(32.1);
 
+		/*
 		double angle = (minAngle - Math.atan(target.getZ() / Math.abs(target.getX())));// / Math.PI / 2.0;
 		log("Radian Target angle", angle);
 		double scale = 3.5 / (minAngle - maxAngle);
-		setAngleTalonPosition(angle * scale);
+		setPosition(angle * scale);
+		 */
+
+		setPositionDegrees(MathUtil.clamp(distanceToAngleWithin(distance), -32, 52));
+		log("Distance To Angle", distanceToAngleWithin(distance));
 	}
 
 	/**
