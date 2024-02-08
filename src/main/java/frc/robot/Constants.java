@@ -27,6 +27,11 @@ public final class Constants
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
 
   //ClimbSubsystem Constants
+
+  public static final class PhotonVision {
+    public static final String backCameraName = "ShooterCam";
+    public static final String frontCameraName = "IntakeCam";
+  }
   public static final class Climb {
     public static final int motorAID = 255;
     public static final int motorBID = 256;
