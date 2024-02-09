@@ -138,11 +138,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
                                   );
   }
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-    photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-    return photonPoseEstimator.update();
-  }
-
   /**
    * Get the path follower with events.
    *
