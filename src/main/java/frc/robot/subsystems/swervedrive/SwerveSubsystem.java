@@ -404,15 +404,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
 
-  private void setupPhotonPoseEstimator(PhotonCamera camera, Transform3d cameraToRobot) {
-    try {
-      AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-      poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraToRobot);
-    } catch(IOException e) {
-      DriverStation.reportError(e.toString(), true);
-    }
-  }
-
   /**
    *
    * @param prevEstimatedRobotPose Robot's current pose
