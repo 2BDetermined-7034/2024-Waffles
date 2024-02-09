@@ -113,7 +113,7 @@ public class RobotContainer
 
     new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
 
-    new Trigger(driverController::getL1Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
+    new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
   }
 
   /**

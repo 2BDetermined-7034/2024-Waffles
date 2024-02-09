@@ -55,7 +55,7 @@ public class AutoFactory {
                 tagPosition = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(aprilTagIndex).get();
 
                 double rotation = Math.atan((tagPosition.getX() - swerve.getPose().getX()) / (tagPosition.getY() - swerve.getPose().getY()));
-                Pose2d targetPose = new Pose2d(new Translation2d(swerve.getPose().getX(), swerve.getPose().getY()), new Rotation2d(rotation));
+                Pose2d targetPose = new Pose2d(new Translation2d(swerve.getPose().getX(), swerve.getPose().getY()), Rotation2d.fromRadians(rotation));
                 Photonvision.enableVision(false);
                 PathConstraints constraints = new PathConstraints(
                         0, 0,
