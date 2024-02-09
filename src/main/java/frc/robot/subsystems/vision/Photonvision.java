@@ -42,4 +42,5 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
     public static void enableVision(boolean enable) {
         enablePhotonInstances = enable;
     }
+
 }
