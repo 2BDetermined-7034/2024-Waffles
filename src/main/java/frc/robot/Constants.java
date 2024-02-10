@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -11,7 +14,9 @@ import frc.robot.utils.Matrix;
 import swervelib.math.Matter;
 import swervelib.parser.PIDFConfig;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -57,16 +62,26 @@ public final class Constants
   public static final class AprilTags {
 
 
-    public static final HashMap<Integer, Pose3d> tagmap = new HashMap<>();
+//    public static final HashMap<Integer, Pose3d> tagmap = new HashMap<>();
+//    static {
+//      Matrix tag1posmat = new Matrix(4, 4);
+//      tag1posmat.data = new double[][] {
+//              {-0.5,     -0.866025, 0, 6.808597},
+//              {0.866025, -0.5,      0, -3.859403},
+//              {0,        0,         1, 1.355852},
+//              {0, 0, 0, 1}
+//      };
+//      tagmap.put(1, Matrix.toTransformations(tag1posmat));
+//    }
+
+    public static final List<AprilTag> layout;
+
     static {
-      Matrix tag1posmat = new Matrix(4, 4);
-      tag1posmat.data = new double[][] {
-              {-0.5,     -0.866025, 0, 6.808597},
-              {0.866025, -0.5,      0, -3.859403},
-              {0,        0,         1, 1.355852},
-              {0, 0, 0, 1}
-      };
-      tagmap.put(1, Matrix.toTransformations(tag1posmat));
+      try {
+        layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTags();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
