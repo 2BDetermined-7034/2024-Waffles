@@ -8,13 +8,17 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.vision.Laser;
+import frc.robot.utils.SubsystemLogging;
 
 public class Intake extends SubsystemBase {
 	/** Creates a new ExampleSubsystem. */
+	public Laser laser;
 	CANSparkMax Motor1;
 	CANSparkMax Motor2;
 	CANSparkMax Motor3;
 	public Intake() {
+		laser = new Laser();
 		Motor1 = new CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless);
 		Motor2 = new CANSparkMax(11,CANSparkLowLevel.MotorType.kBrushless);
 		Motor2.setInverted(true);
