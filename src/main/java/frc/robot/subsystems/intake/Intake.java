@@ -11,21 +11,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 	/** Creates a new ExampleSubsystem. */
-	CANSparkMax Motor1;
-	CANSparkMax Motor2;
-	CANSparkMax Motor3;
+	CANSparkMax motor1;
+	CANSparkMax motor2;
+	CANSparkMax motor3;
 	public Intake() {
-		Motor1 = new CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless);
-		Motor2 = new CANSparkMax(11,CANSparkLowLevel.MotorType.kBrushless);
-		Motor2.setInverted(true);
-		Motor3 = new CANSparkMax(12,CANSparkLowLevel.MotorType.kBrushless);
-		Motor3.setInverted(true);
+		motor1 = new CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless);
+		motor2 = new CANSparkMax(11,CANSparkLowLevel.MotorType.kBrushless);
+		motor2.setInverted(true);
+		motor3 = new CANSparkMax(12,CANSparkLowLevel.MotorType.kBrushless);
+		motor3.setInverted(true);
 
 	}
    public void IntakeSetSpeed(double speed){
-		Motor1.set(speed);
-	    Motor2.set(speed);
-	    Motor3.set(speed);
+		motor1.set(speed);
+	    motor2.set(speed);
+	    motor3.set(speed);
    }
 	/**
 	 * Example command factory method.

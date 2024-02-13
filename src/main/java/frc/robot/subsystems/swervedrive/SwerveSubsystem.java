@@ -42,8 +42,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import static frc.robot.RobotContainer.backCamera;
-import static frc.robot.RobotContainer.frontCamera;
+//import static frc.robot.RobotContainer.backCamera;
+//import static frc.robot.RobotContainer.frontCamera;
 
 
 public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
@@ -84,7 +84,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75, 1);
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
@@ -438,15 +438,15 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public void periodic()
   {
 
-    processCamera(frontCamera);
-    processCamera(backCamera);
+    //processCamera(frontCamera);
+    //processCamera(backCamera);
 
-
+    /*
     swerveDrive.updateOdometry();
     log("Swerve States", swerveDrive.getStates());
     log("Pose", swerveDrive.getPose());
     log("Pose + odometry offset", swerveDrive.getPose().rotateBy(getHeading()));
-
+     */
   }
 
   public Rotation2d getYaw() {

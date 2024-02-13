@@ -46,8 +46,8 @@ public class RobotContainer
 
 //  public static Limelight limelight= new Limelight();
 
-  public static Photonvision frontCamera = new Photonvision(Constants.PhotonVision.frontCameraName, new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,Math.PI)));
-  public static Photonvision backCamera = new Photonvision(Constants.PhotonVision.backCameraName, new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0)));
+  //public static Photonvision frontCamera = new Photonvision(Constants.PhotonVision.frontCameraName, new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,Math.PI)));
+  //public static Photonvision backCamera = new Photonvision(Constants.PhotonVision.backCameraName, new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,0,0)));
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
