@@ -10,7 +10,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.*;
@@ -22,12 +21,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.vision.Photonvision;
-import frc.robot.utils.SubsystemLogging;
 import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -39,14 +34,13 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 //import static frc.robot.RobotContainer.backCamera;
 //import static frc.robot.RobotContainer.frontCamera;
 
 
-public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
+public class SwerveSubsystem extends SubsystemBase
 {
 
   /**

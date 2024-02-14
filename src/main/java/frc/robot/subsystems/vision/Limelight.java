@@ -1,18 +1,15 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.utils.SubsystemLogging;
 
-public class Limelight extends SubsystemBase implements SubsystemLogging {
+public class Limelight extends SubsystemBase  {
 	protected NetworkTable networkTable;
 	protected NetworkTableEntry tx, ty, ta, botpose;
 	protected double x, y, area;
@@ -30,8 +27,6 @@ public class Limelight extends SubsystemBase implements SubsystemLogging {
 		x = tx.getDouble(errorCode);
 		y = ty.getDouble(errorCode);
 		area = ta.getDouble(errorCode);
-
-		logger();
 
 //		SmartDashboard.putNumber("Limelight X", x);
 //		SmartDashboard.putNumber("Limelight Y", y);
@@ -51,12 +46,5 @@ public class Limelight extends SubsystemBase implements SubsystemLogging {
 
 
 
-	public void logger() {
-		log("X", getX());
-		log("y", getY());
-		log("Area", getArea());
-		log("Botpose Double", getBotPose());
-		log("Actual bot pose", getBotPose3D());
-		log("Tag 1 Poses", Constants.AprilTags.tagmap.get(1));
-	}
+
 }
