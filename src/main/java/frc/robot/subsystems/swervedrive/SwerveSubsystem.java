@@ -97,7 +97,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
       /*
       The camera relative to the robot
        */
-      Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.0, 0.5), new Rotation3d(0,12.3 * Math.PI / 180,Math.PI));
+      Transform3d robotToCam = new Transform3d(new Translation3d(0, -0.3, 0.5), new Rotation3d(0,12.3 * Math.PI / 180,Math.PI));
       photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonvision.getCamera(), robotToCam);
 
     } catch(IOException e) {
@@ -456,4 +456,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging
   public Rotation2d getAngleRelativeTo() {
     return angleRelativeTo;
   }
+
+
 }

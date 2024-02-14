@@ -7,15 +7,18 @@ package frc.robot.commands.drivebase;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import frc.robot.utils.SubsystemLogging;
 import swervelib.SwerveController;
 
 /**
  * An example command that uses an example subsystem.
  */
-public class TeleopDrive extends Command
+public class TeleopDrive extends Command implements SubsystemLogging
 {
 
   private final SwerveSubsystem  swerve;
@@ -62,6 +65,10 @@ public class TeleopDrive extends Command
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed / 2, yVelocity * swerve.maximumSpeed / 2),
                  angVelocity * controller.config.maxAngularVelocity / 2,
                  driveMode.getAsBoolean());
+
+    double rotation = Math.atan2(Constants.AprilTags.layout.get(7).pose.getY() - swerve.getPose().getY(), Constants.AprilTags.layout.get(7).pose.getX() - swerve.getPose().getX());
+    log("Rot error", rotation);
+
   }
 
   // Called once the command ends or is interrupted.

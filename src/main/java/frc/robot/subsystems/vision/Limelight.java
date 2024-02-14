@@ -57,6 +57,6 @@ public class Limelight extends SubsystemBase implements SubsystemLogging {
 		log("Area", getArea());
 		log("Botpose Double", getBotPose());
 		log("Actual bot pose", getBotPose3D());
-		log("Tag 1 Poses", Constants.AprilTags.tagmap.get(1));
+		//log("Tag 1 Poses", Constants.AprilTags.tagmap.get(1));
 	}
 }

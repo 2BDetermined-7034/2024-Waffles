@@ -16,9 +16,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ShooterCommand extends Command implements SubsystemLogging {
-	private ShooterSubsystem shooter;
+	protected ShooterSubsystem shooter;
 	protected SwerveSubsystem swerveSubsystem;
-	private Photonvision photon = RobotContainer.photon;
+	protected Photonvision photon = RobotContainer.photon;
+
+
 
 	public ShooterCommand(ShooterSubsystem shooter, SwerveSubsystem swerveDrive) {
 		this.shooter = shooter;

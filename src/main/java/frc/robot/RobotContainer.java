@@ -22,9 +22,11 @@ import frc.robot.commands.auto.AutoFactory;
 import frc.robot.commands.drivebase.ControllerDrive;
 import frc.robot.commands.drivebase.TeleopDrive;
 import frc.robot.commands.shooter.ShooterCommand;
+import frc.robot.commands.shooter.ShooterSourceIntake;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
+import frc.robot.commands.drivebase.RotateDriveCommand;
 
 import java.io.File;
 
@@ -40,7 +42,6 @@ public class RobotContainer
   public static Photonvision photon = new Photonvision();
 
 
-
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
@@ -52,6 +53,9 @@ public class RobotContainer
 
   public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
+  public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem , drivebase );
+  public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -114,6 +118,10 @@ public class RobotContainer
     new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
 
     new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
+
+    new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateDriveCommand);
+    new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
+
   }
 
   /**
