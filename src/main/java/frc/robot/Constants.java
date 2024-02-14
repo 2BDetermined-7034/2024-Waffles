@@ -90,6 +90,7 @@ public final class Constants
     public static final int shooterAngleTalonID = 5;
     public static final int shooterNeo550ID = 9;
     public static final double angleGearRatio = (72.0 / 18.0) * (4.0 / 1.0);
-    public static final double angleAtHorizon = 52;
+    public static final double angleAtHorizon = 48.0;
+    public static final double rotationsToDegrees = 0;
   }
 }
