@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -35,7 +36,8 @@ import java.io.File;
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
  * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class
+RobotContainer {
 	private final SendableChooser<Command> autoChooser;
 	public static Photonvision photon = new Photonvision();
 	// The robot's subsystems and commands are defined here...
@@ -54,6 +56,7 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
+		registerPathplannerCommands();
 
 		// Build an auto chooser. This will use Commands.none() as the default option.
 		autoChooser = AutoBuilder.buildAutoChooser();
@@ -134,7 +137,8 @@ public class RobotContainer {
 		drivebase.setMotorBrake(brake);
 	}
 
+	// Registers all commands necessary for autonomous and OTFPG here using NamedCommands.registerCommand()
 	public void registerPathplannerCommands() {
-
+		NamedCommands.registerCommand("Shoot (with aim)", new ShooterCommand(shooterSubsystem, drivebase));
 	}
 }

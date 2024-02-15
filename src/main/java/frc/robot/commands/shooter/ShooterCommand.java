@@ -1,7 +1,9 @@
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.auto.AutoFactory;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -41,7 +43,8 @@ public class ShooterCommand extends Command implements SubsystemLogging {
 		//gets targets id 7, or 15 for speaker distance
 		List<PhotonTrackedTarget> speakerTargetList = photon.targets().stream().filter((target) -> target.getFiducialId() == (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue) ? 7 : 4)).toList();
 		if(!speakerTargetList.isEmpty()) {
-			shooter.setAngleFromTag(speakerTargetList.get(0).getBestCameraToTarget().getTranslation());
+
+			shooter.setAngleFromTag(swerveSubsystem.getPose().getTranslation().minus(Constants.AprilTags.layout.get(7).pose.getTranslation().toTranslation2d()));
 		}
 //		shooter.setAngleTalonPosition(1.0);
 		shooter.setVelocityTalon(0.8);

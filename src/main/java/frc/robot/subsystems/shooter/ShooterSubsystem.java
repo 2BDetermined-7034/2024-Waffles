@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.SubsystemLogging;
@@ -72,6 +73,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		log("Angle Talon Velocity", getAngleVelocity());
 		log("Angle Talon Position", getAnglePosition());
 		log("Angle Talon Goal", angleMotorPosition);
+		log("Angle Talon Position Deg", rotationsToDegrees(getAnglePosition()));
 	}
 
 
@@ -125,10 +127,11 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @return Angle to shoot into the shooter at (in degrees)
 	 */
 	public double distanceToAngleWithin(double distance) {
+		log("Target Distance", distance);
 		if(distance*39.37>72) {
 			return Math.toDegrees(Math.atan((2.046 - (0.457 + 0.114 * Math.sin(0.423480295541))) / distance));
 		}else{
-			return Math.pow(distance, 0.9917707)*59.67448;
+			return Math.pow(0.9917707, distance)*59.67448;
 		}
 
 		/*
@@ -147,9 +150,9 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * TODO Fix scaling and get actual relative offset aside from 1.0 for zed.
 	 * @param relativeTagPosition
 	 */
-	public void setAngleFromTag(Translation3d relativeTagPosition) {
+	public void setAngleFromTag(Translation2d relativeTagPosition) {
 		//TODO Figure out the distance from the target vertex to the tag
-		double distance = relativeTagPosition.toTranslation2d().getNorm();
+		double distance = relativeTagPosition.getNorm();
 		log("Distance", distance);
 
 		//Yes, min is greater than max. min is the base measurement
