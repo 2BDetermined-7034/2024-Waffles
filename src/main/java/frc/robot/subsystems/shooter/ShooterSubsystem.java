@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.SubsystemLogging;
 
@@ -74,6 +73,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		log("Angle Talon Position", getAnglePosition());
 		log("Angle Talon Goal", angleMotorPosition);
 		log("Angle Talon Position Deg", rotationsToDegrees(getAnglePosition()));
+		log("Angle Talon Goal Deg", rotationsToDegrees(angleMotorPosition));
 	}
 
 
@@ -127,7 +127,6 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @return Angle to shoot into the shooter at (in degrees)
 	 */
 	public double distanceToAngleWithin(double distance) {
-		log("Target Distance", distance);
 		if(distance*39.37>72) {
 			return Math.toDegrees(Math.atan((2.046 - (0.457 + 0.114 * Math.sin(0.423480295541))) / distance));
 		}else{
@@ -167,12 +166,12 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		setPosition(angle * scale);
 		 */
 
-		setPositionDegrees(MathUtil.clamp(distanceToAngleWithin(distance), -28, 47));
-		log("Distance To Angle", distanceToAngleWithin(distance));
+		setPositionDegrees(MathUtil.clamp(distanceToAngleWithin(distance), angleFrontHardstop, angleBackHardstop));
 	}
 
 	/**
 	 * Sets Angle Talon's Velocity as a percent[-1.0, 1.0]
+	 * THIS SHOULD NOT BE USED, it runs the risk of slamming the shooter into the hardstops.
 	 * @param targetVelocity velocity
 	 */
 	public void setAngleTalonVelocity(double targetVelocity) {

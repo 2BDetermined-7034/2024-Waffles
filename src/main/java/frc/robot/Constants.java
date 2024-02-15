@@ -7,15 +7,12 @@ package frc.robot;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.utils.Matrix;
 import swervelib.math.Matter;
 import swervelib.parser.PIDFConfig;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -87,6 +84,9 @@ public final class Constants {
 		public static final int shooterNeo550ID = 9;
 		public static final double angleGearRatio = (72.0 / 18.0) * (4.0 / 1.0);
 		public static final double angleAtHorizon = 48.0;
+
+		public static final double angleFrontHardstop = -28.0;
+		public static final double angleBackHardstop = 47.0;
 		public static final double rotationsToDegrees = 0;
 	}
 }

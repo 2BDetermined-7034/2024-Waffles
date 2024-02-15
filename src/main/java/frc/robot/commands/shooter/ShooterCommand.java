@@ -54,7 +54,6 @@ public class ShooterCommand extends Command implements SubsystemLogging {
 	@Override
 	public void end(boolean interrupted) {
 		shooter.setVelocityTalon(0);
-		shooter.setAngleTalonVelocity(0);
 		shooter.setIndexerNeo550Speed(0);
 	}
 }
