@@ -66,6 +66,7 @@ public class RobotContainer
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("New Auto", new PathPlannerAuto("New Auto"));
+    autoChooser.addOption("Drive Forward", AutoFactory.forward());
     //autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
