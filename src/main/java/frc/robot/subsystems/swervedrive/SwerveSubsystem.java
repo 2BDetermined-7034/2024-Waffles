@@ -56,10 +56,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging {
 	Photonvision photonvision = RobotContainer.photon;
 	PhotonPoseEstimator photonPoseEstimator;
 
-	// TODO: EXPERIMENTAL
-	public Rotation2d angleRelativeTo;
-
-
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
 	 *
@@ -99,8 +95,6 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging {
 		} catch (IOException e) {
 			DriverStation.reportError(e.toString(), true);
 		}
-
-		angleRelativeTo = swerveDrive.getYaw();
 
 	}
 
@@ -418,14 +412,5 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging {
 	public Rotation2d getYaw() {
 		return swerveDrive.getYaw();
 	}
-
-	public void setAngleRelativeTo() {
-		this.angleRelativeTo = swerveDrive.getYaw();
-	}
-
-	public Rotation2d getAngleRelativeTo() {
-		return angleRelativeTo;
-	}
-
 
 }
