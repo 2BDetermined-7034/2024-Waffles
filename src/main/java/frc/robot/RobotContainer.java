@@ -35,115 +35,106 @@ import java.io.File;
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
  * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer
-{
-  private final SendableChooser<Command> autoChooser;
-
-  public static Photonvision photon = new Photonvision();
-
-
-  // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                         "swerve/neo"));
-  XboxController operatorController = new XboxController(1);
-  PS5Controller driverController = new PS5Controller(0);
-
-//  public static Limelight limelight= new Limelight();
-
-
-  public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
-  public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem , drivebase );
-  public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
+public class RobotContainer {
+	private final SendableChooser<Command> autoChooser;
+	public static Photonvision photon = new Photonvision();
+	// The robot's subsystems and commands are defined here...
+	private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+			"swerve/neo"));
+	XboxController operatorController = new XboxController(1);
+	PS5Controller driverController = new PS5Controller(0);
+	//  public static Limelight limelight= new Limelight();
+	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+	public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
+	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
+	public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
 
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer()
-  {
+	/**
+	 * The container for the robot. Contains subsystems, OI devices, and commands.
+	 */
+	public RobotContainer() {
 
-    // Build an auto chooser. This will use Commands.none() as the default option.
-    autoChooser = AutoBuilder.buildAutoChooser();
-    autoChooser.addOption("New Auto", new PathPlannerAuto("New Auto"));
-    autoChooser.addOption("Drive Forward", AutoFactory.forward());
-    //autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+		// Build an auto chooser. This will use Commands.none() as the default option.
+		autoChooser = AutoBuilder.buildAutoChooser();
+		autoChooser.addOption("New Auto", new PathPlannerAuto("New Auto"));
+		autoChooser.addOption("Drive Forward", drivebase.getAutonomousCommand("2mStraight", true));
+		//autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-
+		SmartDashboard.putData("Auto Chooser", autoChooser);
 
 
-    // Configure the trigger bindings
-    configureBindings();
+		// Configure the trigger bindings
+		configureBindings();
 
-    TeleopDrive closedFieldRel = new TeleopDrive(
-        drivebase,
-        () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> driverController.getRightX(), () -> true);
+		TeleopDrive closedFieldRel = new TeleopDrive(
+				drivebase,
+				() -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+				() -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+				() -> driverController.getRightX(), () -> true);
 
-    TeleopDrive closedFieldRelOperator = new TeleopDrive(
-            drivebase,
-            () -> MathUtil.applyDeadband(operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-            () -> MathUtil.applyDeadband(operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+		TeleopDrive closedFieldRelOperator = new TeleopDrive(
+				drivebase,
+				() -> MathUtil.applyDeadband(operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+				() -> MathUtil.applyDeadband(operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
 
-            () -> operatorController.getRightX(), () -> true);
+				() -> operatorController.getRightX(), () -> true);
 
-    drivebase.setDefaultCommand(new ControllerDrive(drivebase,
-            () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-            () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-            () -> driverController.getRawAxis(2), true));
-
-
-    drivebase.setDefaultCommand(closedFieldRel);
-  }
+		drivebase.setDefaultCommand(new ControllerDrive(drivebase,
+				() -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+				() -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+				() -> driverController.getRawAxis(2), true));
 
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
-   * named factories in {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
-   * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
-   */
+		drivebase.setDefaultCommand(closedFieldRel);
+	}
 
 
-  private void configureBindings()
-  {
-    //new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-   // new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
+	/**
+	 * Use this method to define your trigger->command mappings. Triggers can be created via the
+	 * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
+	 * named factories in {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+	 * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+	 * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+	 */
 
-    //new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
-    new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(drivebase::zeroGyro));
 
-    new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
+	private void configureBindings() {
+		//new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
+		// new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
 
-    new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
+		//new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
+		new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(drivebase::zeroGyro));
 
-    new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateDriveCommand);
-    new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
+		new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
 
-  }
+		new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand()
-  {
-    // An example command will be run in autonomous
-    //return drivebase.getAutonomousCommand("New Path", true);
-    return autoChooser.getSelected();
-  }
+		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateDriveCommand);
+		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
 
-  public void setDriveMode()
-  {
-    //drivebase.setDefaultCommand();
-  }
+	}
 
-  public void setDriveMotorBrake(boolean brake)
-  {
-    drivebase.setMotorBrake(brake);
-  }
+	/**
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
+	 * @return the command to run in autonomous
+	 */
+	public Command getAutonomousCommand() {
+		// An example command will be run in autonomous
+		//return drivebase.getAutonomousCommand("New Path", true);
+		return autoChooser.getSelected();
+	}
+
+	public void setDriveMode() {
+		//drivebase.setDefaultCommand();
+	}
+
+	public void setDriveMotorBrake(boolean brake) {
+		drivebase.setMotorBrake(brake);
+	}
+
+	public void registerPathplannerCommands() {
+
+	}
 }

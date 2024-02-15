@@ -26,40 +26,36 @@ import java.util.List;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants
-{
+public final class Constants {
 
-  public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
-  public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
-  public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
+	public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+	public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
+	public static final double LOOP_TIME = 0.13; //s, 20ms + 110ms sprk max velocity lag
 
-  public static final class Auton
-  {
+	public static final class Auton {
 
-    public static final PIDFConfig TranslationPID     = new PIDFConfig(0.7, 0, 0);
-    public static final PIDFConfig angleAutoPID = new PIDFConfig(0.4, 0, 0.01);
+		public static final PIDFConfig TranslationPID = new PIDFConfig(0.7, 0, 0);
+		public static final PIDFConfig angleAutoPID = new PIDFConfig(0.4, 0, 0.01);
 
-    public static final double MAX_ACCELERATION = 2;
-  }
+		public static final double MAX_ACCELERATION = 2;
+	}
 
-  public static final class Drivebase
-  {
+	public static final class Drivebase {
 
-    // Hold time on motor brakes when disabled
-    public static final double WHEEL_LOCK_TIME = 10; // seconds
-  }
+		// Hold time on motor brakes when disabled
+		public static final double WHEEL_LOCK_TIME = 10; // seconds
+	}
 
-  public static class OperatorConstants
-  {
+	public static class OperatorConstants {
 
-    // Joystick Deadband
-    public static final double LEFT_X_DEADBAND = 0.1;
-    public static final double LEFT_Y_DEADBAND = 0.1;
-    public static final double RIGHT_X_DEADBAND = 0.1;
-    public static final double TURN_CONSTANT = 0.75;
-  }
+		// Joystick Deadband
+		public static final double LEFT_X_DEADBAND = 0.1;
+		public static final double LEFT_Y_DEADBAND = 0.1;
+		public static final double RIGHT_X_DEADBAND = 0.1;
+		public static final double TURN_CONSTANT = 0.75;
+	}
 
-  public static final class AprilTags {
+	public static final class AprilTags {
 
 
 //    public static final HashMap<Integer, Pose3d> tagmap = new HashMap<>();
@@ -74,23 +70,23 @@ public final class Constants
 //      tagmap.put(1, Matrix.toTransformations(tag1posmat));
 //    }
 
-    public static final List<AprilTag> layout;
+		public static final List<AprilTag> layout;
 
-    static {
-      try {
-        layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTags();
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
+		static {
+			try {
+				layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTags();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-  public static final class Shooter {
-    public static final int shooterVelocityTalonID = 6  ;
-    public static final int shooterAngleTalonID = 5;
-    public static final int shooterNeo550ID = 9;
-    public static final double angleGearRatio = (72.0 / 18.0) * (4.0 / 1.0);
-    public static final double angleAtHorizon = 48.0;
-    public static final double rotationsToDegrees = 0;
-  }
+	public static final class Shooter {
+		public static final int shooterVelocityTalonID = 6;
+		public static final int shooterAngleTalonID = 5;
+		public static final int shooterNeo550ID = 9;
+		public static final double angleGearRatio = (72.0 / 18.0) * (4.0 / 1.0);
+		public static final double angleAtHorizon = 48.0;
+		public static final double rotationsToDegrees = 0;
+	}
 }

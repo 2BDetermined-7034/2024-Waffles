@@ -28,7 +28,8 @@ public class ShooterCommand extends Command implements SubsystemLogging {
 		addRequirements(shooter);
 	}
 
-	public double getDistanceToAngle(double distance) {
+	@Deprecated
+	private double getDistanceToAngle(double distance) {
 		return Math.atan((80.57-23.365)/(27+distance));
 	}
 
