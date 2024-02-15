@@ -115,7 +115,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @param degrees
 	 */
 	public void setPositionDegrees(double degrees){
-		setPosition(((-degrees + angleAtHorizon) / 360.0) * angleGearRatio);
+		setPosition(degreesToRotations(degrees));
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		setPosition(angle * scale);
 		 */
 
-		setPositionDegrees(MathUtil.clamp(distanceToAngleWithin(distance), -32, 52));
+		setPositionDegrees(MathUtil.clamp(distanceToAngleWithin(distance), -28, 47));
 		log("Distance To Angle", distanceToAngleWithin(distance));
 	}
 
@@ -193,4 +193,11 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @param speed percent velocity
 	 */
 	public void setIndexerNeo550Speed(double speed) { indexerNeo550.set(MathUtil.clamp(speed, -1, 1)); }
+
+	public double rotationsToDegrees(double rotations){
+		return (((rotations / angleGearRatio) * 360.0) - angleAtHorizon) * -1;
+	}
+	public double degreesToRotations(double degrees){
+		return ((-degrees + angleAtHorizon) / 360.0) * angleGearRatio;
+	}
 }

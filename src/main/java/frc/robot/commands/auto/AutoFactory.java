@@ -76,6 +76,10 @@ public class AutoFactory {
         }
     }
 
+    /**
+     * Creates a 2m drive forward pathplanner autonomous command
+     * @return 2mStraight auto command
+     */
     public static Command forward() {
         PathPlannerPath path =  PathPlannerPath.fromPathFile("2mStraight");
         return AutoBuilder.followPath(path);

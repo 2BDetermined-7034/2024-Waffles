@@ -23,9 +23,9 @@ public class ShooterSourceIntake extends ShooterCommand {
 //		if(!speakerTargetList.isEmpty()) {
 //			shooter.setAngleFromTag(speakerTargetList.get(0).getBestCameraToTarget().getTranslation());
 //		}
-		shooter.setPositionDegrees(20.05);
+		shooter.setPositionDegrees(-15);
 //		shooter.setAngleTalonPosition(1.0);
-		shooter.setVelocityTalon(-0.2);
-//		shooter.setIndexerNeo550Speed(0.6);
+		shooter.setVelocityTalon(0);
+		shooter.setIndexerNeo550Speed(0.6);
 	}
 }
