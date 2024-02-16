@@ -107,13 +107,22 @@ public class AutoFactory {
         return new WaitCommand(0.0);
     }
 
-    public static Command pathToSubwoofer() {
+    public static Command pathToSubwooferPose() {
         try {
             switch (DriverStation.getAlliance().get()) {
                 case Blue -> {
                     Optional<Pose3d> tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(7);
+                    Pose2d tagPose2d = new Pose2d(new Translation2d(tagOptional.get().getX(), tagOptional.get().getY()), new Rotation2d(tagOptional.get().getX(), tagOptional.get().getY()));
 
-                    return new WaitCommand(0);
+                    PathConstraints constraints = new PathConstraints(
+                            1, 1,
+                            Units.degreesToRadians(540), Units.degreesToRadians(720));
+                    return AutoBuilder.pathfindToPose(
+                            tagPose2d,
+                            constraints,
+                            0.0, // Goal end velocity in meters/sec
+                            0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+                    );
                 }
                 case Red -> {
                     Optional<Pose3d> tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(3);
