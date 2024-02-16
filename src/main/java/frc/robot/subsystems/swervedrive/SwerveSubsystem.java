@@ -16,6 +16,7 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -378,6 +379,9 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging {
 		swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
 	}
 
+	public SwerveModuleState[] getStates() {
+		return swerveDrive.getStates();
+	}
 	@Override
 	public void periodic() {
 

@@ -6,18 +6,28 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPoint;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
+import swervelib.SwerveDrive;
 
 import javax.swing.text.html.Option;
 import java.io.IOException;
@@ -25,6 +35,7 @@ import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.sql.Driver;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class AutoFactory {
@@ -107,32 +118,68 @@ public class AutoFactory {
         return new WaitCommand(0.0);
     }
 
-    public static Command pathToSubwooferPose() {
+    /**
+     * wtf did I make
+     * @param swerve
+     * @return
+     */
+    public static Command pathToSubwooferTrajectory(SwerveSubsystem swerve) {
         try {
+            Optional<Pose3d> tagOptional = Optional.empty();
             switch (DriverStation.getAlliance().get()) {
                 case Blue -> {
-                    Optional<Pose3d> tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(7);
-                    Pose2d tagPose2d = new Pose2d(new Translation2d(tagOptional.get().getX(), tagOptional.get().getY()), new Rotation2d(tagOptional.get().getX(), tagOptional.get().getY()));
-
-                    PathConstraints constraints = new PathConstraints(
-                            1, 1,
-                            Units.degreesToRadians(540), Units.degreesToRadians(720));
-                    return AutoBuilder.pathfindToPose(
-                            tagPose2d,
-                            constraints,
-                            0.0, // Goal end velocity in meters/sec
-                            0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-                    );
+                    tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(7);
                 }
                 case Red -> {
-                    Optional<Pose3d> tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(3);
-
-                    return new WaitCommand(0);
+                    tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(3);
                 }
+            }
+
+            if (tagOptional.isPresent()) {
+                Pose3d tagPose = tagOptional.get();
+                Pose2d currentPose = swerve.getPose();
+                Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+                        currentPose,
+                        List.of(),
+                        new Pose2d(
+                                new Translation2d(tagPose.getX(), tagPose.getY()),
+                                tagPose.getRotation().toRotation2d()
+                        ),
+                        new TrajectoryConfig(Units.feetToMeters(2), Units.feetToMeters(2))
+                                .setReversed(false)
+                                .addConstraint(new CentripetalAccelerationConstraint(Units.feetToMeters(2)))
+                                .setKinematics(swerve.getKinematics())
+                );
+                return null;
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
         return new WaitCommand(0);
     }
+
+
+    public static Command pathFindThenFollowPath(String pathName) {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+        PathConstraints constraints = new PathConstraints(
+                1,1,
+                Units.degreesToRadians(540), Units.degreesToRadians(720)
+        );
+
+        return AutoBuilder.pathfindThenFollowPath(
+                path,
+                constraints,
+                3.0
+        );
+    }
+
+    public static Command SubwooferAmp() {
+        return pathFindThenFollowPath("Amp-Side-To-Subwoofer");
+    }
+    public static Command SubwooferSource() {
+        return pathFindThenFollowPath("Source-Side-To-Subwoofer");
+    }
+
+
 }
