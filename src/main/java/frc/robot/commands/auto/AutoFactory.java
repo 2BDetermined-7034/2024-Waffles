@@ -3,12 +3,14 @@ package frc.robot.commands.auto;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPoint;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +19,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
 
+import javax.swing.text.html.Option;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.file.Path;
+import java.sql.Driver;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class AutoFactory {
@@ -33,6 +41,7 @@ public class AutoFactory {
                 0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         );
     }
+
     public static Command rotate(SwerveSubsystem swerve) {
         Pose2d targetPose = new Pose2d(new Translation2d(swerve.getPose().getX(), swerve.getPose().getY()), new Rotation2d(Math.PI));
         Photonvision.enableVision(false);
@@ -50,7 +59,7 @@ public class AutoFactory {
     public static Command pointTowardsTag(int aprilTagIndex, SwerveSubsystem swerve) {
         Pose3d tagPosition;
         try {
-            Optional<Pose3d> tagOptional =  AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(aprilTagIndex);
+            Optional<Pose3d> tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(aprilTagIndex);
             if (tagOptional.isPresent()) {
                 tagPosition = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(aprilTagIndex).get();
 
@@ -70,7 +79,7 @@ public class AutoFactory {
                 DriverStation.reportError("The tag failed to load in: pointTowardsTag", true);
                 return null;
             }
-        } catch  (Exception e) {
+        } catch (Exception e) {
             DriverStation.reportError("The tag map failed to load from file", true);
             return null;
         }
@@ -78,10 +87,11 @@ public class AutoFactory {
 
     /**
      * Creates a 2m drive forward pathplanner autonomous command
+     *
      * @return 2mStraight auto command
      */
     public static Command forward() {
-        PathPlannerPath path =  PathPlannerPath.fromPathFile("2mStraight");
+        PathPlannerPath path = PathPlannerPath.fromPathFile("2mStraight");
         return AutoBuilder.followPath(path);
 
     }
@@ -95,5 +105,25 @@ public class AutoFactory {
         }
 
         return new WaitCommand(0.0);
+    }
+
+    public static Command pathToSubwoofer() {
+        try {
+            switch (DriverStation.getAlliance().get()) {
+                case Blue -> {
+                    Optional<Pose3d> tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(7);
+
+                    return new WaitCommand(0);
+                }
+                case Red -> {
+                    Optional<Pose3d> tagOptional = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile).getTagPose(3);
+
+                    return new WaitCommand(0);
+                }
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return new WaitCommand(0);
     }
 }
