@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import swervelib.parser.SwerveParser;
 
 import java.io.File;
@@ -20,7 +24,7 @@ import java.io.IOException;
  * described in the TimedRobot documentation. If you change the name of this class or the package after creating this
  * project, you must also update the build.gradle file in the project.
  */
-public class Robot extends TimedRobot
+public class Robot extends LoggedRobot
 {
 
   private static Robot   instance;
@@ -46,8 +50,13 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit()
   {
+    if (isReal()) {
+//      Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+      new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
+    }
     m_robotContainer = new RobotContainer();
-
+    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
     // immediately when disabled, but then also let it be pushed more 
     //disabledTimer = new Timer();

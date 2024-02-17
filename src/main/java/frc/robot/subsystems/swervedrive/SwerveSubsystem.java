@@ -20,9 +20,13 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.vision.Photonvision;
+import frc.robot.utils.RobotLogger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import swervelib.SwerveController;
@@ -41,7 +45,7 @@ import java.util.Optional;
 //import static frc.robot.RobotContainer.frontCamera;
 
 
-public class SwerveSubsystem extends SubsystemBase
+public class SwerveSubsystem extends SubsystemBase implements RobotLogger
 {
 
   /**
@@ -438,8 +442,9 @@ public class SwerveSubsystem extends SubsystemBase
   {
 
     //processCamera(frontCamera);
-    //processCamera(backCamera);
+    processCamera(RobotContainer.backCamera);
 
+    log("Pose2d", swerveDrive.getPose());
     /*
     swerveDrive.updateOdometry();
     log("Swerve States", swerveDrive.getStates());

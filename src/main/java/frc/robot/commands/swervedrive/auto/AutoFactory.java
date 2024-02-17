@@ -105,14 +105,14 @@ public class AutoFactory {
         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
         PathConstraints constraints = new PathConstraints(
-                1,1,
+                4,8,
                 Units.degreesToRadians(540), Units.degreesToRadians(720)
         );
 
         return AutoBuilder.pathfindThenFollowPath(
                 path,
                 constraints,
-                3.0
+                0
         );
     }
 
