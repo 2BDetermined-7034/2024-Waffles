@@ -1,6 +1,7 @@
 package frc.robot.commands.swervedrive.auto;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AutoFactory {
@@ -80,6 +82,38 @@ public class AutoFactory {
         PathPlannerPath path =  PathPlannerPath.fromPathFile("2mStraight");
         return AutoBuilder.followPath(path);
 
+    }
+
+    public static Command flyPathFindWithPoses() {
+        List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
+                new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
+                new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
+                new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
+        );
+
+        PathPlannerPath path = new PathPlannerPath(
+                bezierPoints,
+                new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
+                new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+        path.preventFlipping = true;
+        return AutoBuilder.pathfindThenFollowPath(path, new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI));
+    }
+
+
+    public static Command pathFindThenFollowPath(String pathName) {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+        PathConstraints constraints = new PathConstraints(
+                1,1,
+                Units.degreesToRadians(540), Units.degreesToRadians(720)
+        );
+
+        return AutoBuilder.pathfindThenFollowPath(
+                path,
+                constraints,
+                3.0
+        );
     }
 
 }

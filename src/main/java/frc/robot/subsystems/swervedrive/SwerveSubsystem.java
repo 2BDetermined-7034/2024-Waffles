@@ -15,6 +15,7 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -406,6 +407,10 @@ public class SwerveSubsystem extends SubsystemBase
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Photonvision camera, Pose2d prevEstimatedRobotPose) {
     camera.getPoseEstimator().setReferencePose(prevEstimatedRobotPose);
     return camera.getPoseEstimator().update();
+  }
+
+  public SwerveModuleState[] getStates() {
+    return swerveDrive.getStates();
   }
   /**
    *
