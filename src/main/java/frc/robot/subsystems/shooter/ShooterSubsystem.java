@@ -129,7 +129,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @return Angle to shoot into the shooter at (in degrees)
 	 */
 	public double distanceToAngleWithin(double distance) {
-			return Math.toDegrees(Math.atan((2.046 - (0.457 + 0.114 * Math.sin(0.423480295541))) / distance));
+			return Math.toDegrees(Math.atan((2.046 - (0.457 + 0.114 * Math.sin(0.423480295541))) / distance * 1.1));
 
 			/*
 		Here's what all the stupid numbers mean:

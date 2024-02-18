@@ -105,20 +105,11 @@ RobotContainer {
 
 
 	private void configureBindings() {
-		//new JoystickButton(driverController, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-		// new Trigger(driverController::getCircleButton).toggleOnTrue(new AutoFactory().driveUpToTarget());
-
-		//new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
 		new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(drivebase::zeroGyro));
-
 		new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
-
-		//new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
-
 		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateDriveCommand);
 		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
 		new Trigger(driverController::getL1Button).onTrue(shooterReset);
-
 	}
 
 	/**
