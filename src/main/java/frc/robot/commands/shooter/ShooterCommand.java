@@ -39,16 +39,20 @@ public class ShooterCommand extends Command implements SubsystemLogging {
 	public void execute() {
 		//shooter.setVelocityTalon(0.3);
 		//shooter.setAngleTalonVelocity(0.05);
+		int tagID = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue) ? 7 : 4;
+
 
 		//gets targets id 7, or 15 for speaker distance
-		List<PhotonTrackedTarget> speakerTargetList = photon.targets().stream().filter((target) -> target.getFiducialId() == (DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue) ? 7 : 4)).toList();
+		List<PhotonTrackedTarget> speakerTargetList = photon.targets().stream().filter((target) -> target.getFiducialId() == (tagID)).toList();
 		if(!speakerTargetList.isEmpty()) {
 
-			shooter.setAngleFromTag(swerveSubsystem.getPose().getTranslation().minus(Constants.AprilTags.layout.get(7).pose.getTranslation().toTranslation2d()));
+			shooter.setAngleFromTag(swerveSubsystem.getPose().getTranslation().minus(Constants.AprilTags.layout.get(tagID).pose.getTranslation().toTranslation2d()));
 		}
 //		shooter.setAngleTalonPosition(1.0);
 		shooter.setVelocityTalon(0.8);
-		shooter.setIndexerNeo550Speed(0.6);
+		if(shooter.getVelocityTalonVelocity() >= 70){
+			shooter.setIndexerNeo550Speed(0.6);
+		}
 	}
 
 	@Override

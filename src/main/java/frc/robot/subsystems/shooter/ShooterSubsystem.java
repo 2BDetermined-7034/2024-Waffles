@@ -74,6 +74,8 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 		log("Angle Talon Goal", angleMotorPosition);
 		log("Angle Talon Position Deg", rotationsToDegrees(getAnglePosition()));
 		log("Angle Talon Goal Deg", rotationsToDegrees(angleMotorPosition));
+		log("Shooter Talon Vel", velocityTalon.getVelocity().getValue() * 360);
+		log("Neo 550 Percent", indexerNeo550.get());
 	}
 
 
