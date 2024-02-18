@@ -105,7 +105,7 @@ public class AutoFactory {
         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
         PathConstraints constraints = new PathConstraints(
-                4,8,
+                5,8,
                 Units.degreesToRadians(540), Units.degreesToRadians(720)
         );
 
