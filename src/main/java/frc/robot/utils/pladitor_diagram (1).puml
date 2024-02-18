@@ -13,6 +13,9 @@ state Constants #red{
     state ShooterSpeed
     state PIDConstants
   }
+  state IntakeConstants{
+    state IntakeSpeed
+  }
 }
 Robot -d-> Constants
 
@@ -21,7 +24,7 @@ Robot -d-> Constants
 SoftwareSubsystems --> DriveBase
 
 State DriveBase #pink {
-  [*] -r-> YAGSL
+  state YAGSL
   YAGSL --> SwerveModules
   YAGSL : Swerve Library
   state YAGSL {
@@ -69,37 +72,52 @@ State DriveBase #pink {
 SoftwareSubsystems --> Intake
 
 state Intake #orangered  {
-  state IntakeNeo1
-  state IntakeNeo2
-  state IntakeNeo3
-  state LaserCAN  
-  [*] -d-> Intake.LaserCAN
+  state IntakeModules #pink{
+      state IntakeCANSpark #orange{
+        state IntakeNeo1
+        state IntakeNeo2
+        state IntakeNeo3
+      }
+     state LaserCAN
+  }
+  state IntakeCommands #purple{
+      state Spit
+      state RunIntake
+      LaserCAN -d-> IntakeNotePresent : boolean
+      IntakeNotePresent -> RunIntake : On false
+      RunIntake -d-> IntakeNeo1 : runs
+      RunIntake -d-> IntakeNeo2 : runs
+      RunIntake -d-> IntakeNeo3 : runs
+      Spit -d-> IntakeNeo1 : reverse
+      Spit -d-> IntakeNeo2 : reverse
+      Spit -d-> IntakeNeo3 : reverse
+  }
 }
 
 SoftwareSubsystems --> Shooter
 
 state Shooter #green {
   state Modules #pink {
-    state CANSpark #orange{
+    state ShooterCANSpark #orange{
       state IndexerNeo550
     }
     state VelocityFalcon
     state AngleFalcon
     state Shooter.Modules.LaserCAN
   }
-  state Commands #purple {
+  state ShooterCommands #purple {
     state NotePresent
     state Shoot
     state SetAngle
   } 
   AngleFalcon <-d- SetAngle : PID Loop
   Shooter.Modules.LaserCAN -u-> NotePresent
-  Commands.NotePresent : boolean
-  Commands.NotePresent -> Commands.NotePresent : Repeat Check Periodically 
-  Commands.NotePresent -d-> Shoot : If true + On Button Pressed
-  Commands.Shoot -u-> Commands.SetAngle
-  Commands.Shoot -u-> Modules.VelocityFalcon : Run Motor
-  Commands.Shoot -u-> Modules.CANSpark.IndexerNeo550 : Run Motor
+  ShooterCommands.NotePresent : boolean
+  ShooterCommands.NotePresent -> ShooterCommands.NotePresent : Repeat Check Periodically
+  ShooterCommands.NotePresent -d-> Shoot : If true + On Button Pressed
+  ShooterCommands.Shoot -u-> ShooterCommands.SetAngle
+  ShooterCommands.Shoot -u-> Modules.VelocityFalcon : Run Motor
+  ShooterCommands.Shoot -u-> Modules.ShooterCANSpark.IndexerNeo550 : Run Motor
 }
 
 SoftwareSubsystems --> Climb
@@ -129,10 +147,12 @@ state Vision #aquamarine {
 Robot --> ElectricalSubsystems
 
 
-Vision.PhotonVision.distance -> Shooter.Commands.SetAngle : ArcTan(Distance to speaker/Difference between desired height and PhotonVision height)
+Vision.PhotonVision.distance -> Shooter.ShooterCommands.SetAngle : ArcTan(Distance to speaker/Difference between desired height and PhotonVision height)
 Constants.ShooterConstants.PIDConstants -> Shooter.Modules.AngleFalcon
 Constants.ShooterConstants.ShooterSpeed -> Shooter.Modules.VelocityFalcon
-Constants.ShooterConstants.IndexSpeed -> Shooter.Modules.IndexerNeo550
+Constants.ShooterConstants.IndexSpeed -> Shooter.Modules.ShooterIndexerNeo550
+Constants.IntakeConstants.IntakeSpeed -> Intake.IntakeCommands.RunIntake : Takes in speed
+Constants.IntakeConstants.IntakeSpeed -> Intake.IntakeCommands.Spit : Takes in speed
 
 
 
