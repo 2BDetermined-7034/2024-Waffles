@@ -1,0 +1,140 @@
+@startuml
+
+hide empty description
+
+Title Robot State Flow Diagram
+
+[*] -> Robot
+
+Robot --> SoftwareSubsystems
+state Constants #red{
+  state ShooterConstants{
+    state IndexSpeed
+    state ShooterSpeed
+    state PIDConstants
+  }
+}
+Robot -d-> Constants
+
+
+
+SoftwareSubsystems --> DriveBase
+
+State DriveBase #pink {
+  [*] -r-> YAGSL
+  YAGSL --> SwerveModules
+  YAGSL : Swerve Library
+  state YAGSL {
+    SwervePoseEstimator -d-> Odometry
+    state Config
+  }
+  state SwerveModules #lightblue {
+    state "FrontLeft" as fl
+    state "FrontRight" as fr
+    state "BackLeft" as bl
+    state "BackRight" as br
+    
+    state Module #purple {
+      state DriveKraken
+      state RotationKraken
+      state Cancoder
+    }
+    
+    Module <-u- fl
+    Module <-u- br
+    Module <-u- bl
+    Module <-u- fr
+    
+
+    state "PIDModuleControl" as drpid
+    state drpid {
+    
+    }
+    
+    drpid : YAGSL Config
+    drpid -u-> RotationKraken
+    
+    
+    
+  }
+
+  YAGSL -r-> Navx
+  State Navx #lightblue{
+    
+    State Gyroscope
+    State Accelerometer
+  }
+}
+
+SoftwareSubsystems --> Intake
+
+state Intake #orangered  {
+  state IntakeNeo1
+  state IntakeNeo2
+  state IntakeNeo3
+  state LaserCAN  
+  [*] -d-> Intake.LaserCAN
+}
+
+SoftwareSubsystems --> Shooter
+
+state Shooter #green {
+  state Modules #pink {
+    state CANSpark #orange{
+      state IndexerNeo550
+    }
+    state VelocityFalcon
+    state AngleFalcon
+    state Shooter.Modules.LaserCAN
+  }
+  state Commands #purple {
+    state NotePresent
+    state Shoot
+    state SetAngle
+  } 
+  AngleFalcon <-d- SetAngle : PID Loop
+  Shooter.Modules.LaserCAN -u-> NotePresent
+  Commands.NotePresent : boolean
+  Commands.NotePresent -> Commands.NotePresent : Repeat Check Periodically 
+  Commands.NotePresent -d-> Shoot : If true + On Button Pressed
+  Commands.Shoot -u-> Commands.SetAngle
+  Commands.Shoot -u-> Modules.VelocityFalcon : Run Motor
+  Commands.Shoot -u-> Modules.CANSpark.IndexerNeo550 : Run Motor
+}
+
+SoftwareSubsystems --> Climb
+
+state Climb #goldenrod{
+  [*] -d-> ClimbNeo
+  ClimbNeo : x2
+  
+}
+
+SoftwareSubsystems --> Vision
+state Vision #aquamarine {
+
+ state PhotonVision #teal { 
+  state "ArducamOV9281" as apcam
+  AprilTags <-d- apcam : detects
+  AprilTags -d-> distance : gets
+  ||
+  state "ArducamOV2381" as notecam
+  Notes <-d- notecam : detects
+  
+  }
+  
+  
+}
+
+Robot --> ElectricalSubsystems
+
+
+Vision.PhotonVision.distance -> Shooter.Commands.SetAngle : ArcTan(Distance to speaker/Difference between desired height and PhotonVision height)
+Constants.ShooterConstants.PIDConstants -> Shooter.Modules.AngleFalcon
+Constants.ShooterConstants.ShooterSpeed -> Shooter.Modules.VelocityFalcon
+Constants.ShooterConstants.IndexSpeed -> Shooter.Modules.IndexerNeo550
+
+
+
+
+@enduml
