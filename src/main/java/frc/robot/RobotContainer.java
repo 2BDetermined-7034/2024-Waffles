@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -37,8 +38,7 @@ import java.io.File;
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
  * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
-public class
-RobotContainer {
+public class RobotContainer {
 	private final SendableChooser<Command> autoChooser;
 	public static Photonvision photon = new Photonvision();
 	// The robot's subsystems and commands are defined here...
@@ -48,11 +48,14 @@ RobotContainer {
 	PS5Controller driverController = new PS5Controller(0);
 	//  public static Limelight limelight= new Limelight();
 	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
+	static {
+
+	}
 	public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
 	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
 	public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
 	public ShooterReset shooterReset = new ShooterReset(shooterSubsystem, drivebase);
-
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -62,8 +65,9 @@ RobotContainer {
 
 		// Build an auto chooser. This will use Commands.none() as the default option.
 		autoChooser = AutoBuilder.buildAutoChooser();
-		autoChooser.addOption("New Auto", new PathPlannerAuto("New Auto"));
+		autoChooser.addOption("Speaker Shot then drive 2m", new PathPlannerAuto("SpeakerShotForward"));
 		autoChooser.addOption("Drive Forward", drivebase.getAutonomousCommand("2mStraight", true));
+		autoChooser.setDefaultOption("Do Nothing", new WaitCommand(1));
 		//autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
 		SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -121,6 +125,16 @@ RobotContainer {
 
 	}
 
+
+	// Registers all commands necessary for autonomous and OTFPG here using NamedCommands.registerCommand()
+
+	/**
+	 *
+	 */
+	public void registerPathplannerCommands() {
+		NamedCommands.registerCommand("Shoot (with aim)", new ShooterCommand(shooterSubsystem, drivebase));
+	}
+
 	/**
 	 * Use this to pass the autonomous command to the main {@link Robot} class.
 	 *
@@ -140,8 +154,4 @@ RobotContainer {
 		drivebase.setMotorBrake(brake);
 	}
 
-	// Registers all commands necessary for autonomous and OTFPG here using NamedCommands.registerCommand()
-	public void registerPathplannerCommands() {
-		NamedCommands.registerCommand("Shoot (with aim)", new ShooterCommand(shooterSubsystem, drivebase));
-	}
 }
