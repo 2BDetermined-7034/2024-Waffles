@@ -23,6 +23,7 @@ import frc.robot.commands.auto.AutoFactory;
 import frc.robot.commands.drivebase.ControllerDrive;
 import frc.robot.commands.drivebase.TeleopDrive;
 import frc.robot.commands.shooter.ShooterCommand;
+import frc.robot.commands.shooter.ShooterReset;
 import frc.robot.commands.shooter.ShooterSourceIntake;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -50,6 +51,7 @@ RobotContainer {
 	public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
 	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
 	public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
+	public ShooterReset shooterReset = new ShooterReset(shooterSubsystem, drivebase);
 
 
 	/**
@@ -111,10 +113,11 @@ RobotContainer {
 
 		new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
 
-		new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
+		//new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
 
 		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateDriveCommand);
 		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
+		new Trigger(driverController::getL1Button).onTrue(shooterReset);
 
 	}
 

@@ -46,7 +46,9 @@ public class ShooterCommand extends Command implements SubsystemLogging {
 		List<PhotonTrackedTarget> speakerTargetList = photon.targets().stream().filter((target) -> target.getFiducialId() == (tagID)).toList();
 		if(!speakerTargetList.isEmpty()) {
 
-			shooter.setAngleFromTag(swerveSubsystem.getPose().getTranslation().minus(Constants.AprilTags.layout.get(tagID).pose.getTranslation().toTranslation2d()));
+			//shooter.setAngleFromTag(swerveSubsystem.getPose().getTranslation().minus(Constants.AprilTags.layout.get(tagID).pose.getTranslation().toTranslation2d()));
+			PhotonTrackedTarget target = speakerTargetList.get(0);
+			shooter.setAngleFromTag(target.getBestCameraToTarget().getTranslation().toTranslation2d());
 		}
 //		shooter.setAngleTalonPosition(1.0);
 		shooter.setVelocityTalon(0.8);

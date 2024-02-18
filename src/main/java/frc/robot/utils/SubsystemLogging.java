@@ -1,7 +1,6 @@
 package frc.robot.utils;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.littletonrobotics.junction.Logger;
 
@@ -10,6 +9,10 @@ import java.util.HashMap;
 
 public interface SubsystemLogging {
     default void log(String key, String val) {
+        Logger.recordOutput(String.format("%s/%s", this.getClass().getName().substring(22), key), (val));
+    }
+
+    default void log(String key, Translation3d val) {
         Logger.recordOutput(String.format("%s/%s", this.getClass().getName().substring(22), key), (val));
     }
 

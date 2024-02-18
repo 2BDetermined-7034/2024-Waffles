@@ -47,7 +47,7 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void robotInit() {
 		if (isReal()) {
-			Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+			//Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
 			Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
 			new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
 		} else {
