@@ -11,6 +11,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,12 +58,18 @@ public class RobotContainer {
 	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
 	public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
 	public ShooterReset shooterReset = new ShooterReset(shooterSubsystem, drivebase);
+	private ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Driver");
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
 		registerPathplannerCommands();
+
+		shuffleboardTab.addCamera("Shooter Cam", "greencasecam", "http://10.70.34.233:1186/stream.mjpg");
+		shuffleboardTab.add("Field", drivebase.getField());
+		shuffleboardTab.add("Shooter Angle Position", shooterSubsystem.getShooterAngleDegrees());
+		shuffleboardTab.add("NavX Yaw", drivebase.getYaw());
 
 		// Build an auto chooser. This will use Commands.none() as the default option.
 		autoChooser = AutoBuilder.buildAutoChooser();

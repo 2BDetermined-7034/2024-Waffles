@@ -198,6 +198,9 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	public double rotationsToDegrees(double rotations){
 		return (((rotations / angleGearRatio) * 360.0) - angleAtHorizon) * -1;
 	}
+	public double getShooterAngleDegrees() {
+		return rotationsToDegrees(getAnglePosition());
+	}
 	public double degreesToRotations(double degrees){
 		return ((-degrees + angleAtHorizon) / 360.0) * angleGearRatio;
 	}
