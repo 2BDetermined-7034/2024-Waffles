@@ -38,33 +38,19 @@ import java.io.File;
  */
 public class
 RobotContainer {
-	private final SendableChooser<Command> autoChooser;
-	public static Photonvision photon = new Photonvision();
 	// The robot's subsystems and commands are defined here...
 	private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
 			"swerve/neo"));
 	XboxController operatorController = new XboxController(1);
 	PS5Controller driverController = new PS5Controller(0);
 	//  public static Limelight limelight= new Limelight();
-	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-	public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
-	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
-	public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
 
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		registerPathplannerCommands();
 
-		// Build an auto chooser. This will use Commands.none() as the default option.
-		autoChooser = AutoBuilder.buildAutoChooser();
-		autoChooser.addOption("New Auto", new PathPlannerAuto("New Auto"));
-		autoChooser.addOption("Drive Forward", drivebase.getAutonomousCommand("2mStraight", true));
-		//autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
-		SmartDashboard.putData("Auto Chooser", autoChooser);
 
 
 		// Configure the trigger bindings
@@ -109,12 +95,6 @@ RobotContainer {
 		//new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
 		new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(drivebase::zeroGyro));
 
-		new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
-
-		new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
-
-		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateDriveCommand);
-		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
 
 	}
 
@@ -126,7 +106,7 @@ RobotContainer {
 	public Command getAutonomousCommand() {
 		// An example command will be run in autonomous
 		//return drivebase.getAutonomousCommand("New Path", true);
-		return autoChooser.getSelected();
+		return null;
 	}
 
 	public void setDriveMode() {
@@ -137,8 +117,5 @@ RobotContainer {
 		drivebase.setMotorBrake(brake);
 	}
 
-	// Registers all commands necessary for autonomous and OTFPG here using NamedCommands.registerCommand()
-	public void registerPathplannerCommands() {
-		NamedCommands.registerCommand("Shoot (with aim)", new ShooterCommand(shooterSubsystem, drivebase));
-	}
+
 }

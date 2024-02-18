@@ -59,13 +59,9 @@ public class TeleopDrive extends Command implements SubsystemLogging {
 
 
 		// Drive using raw values.
-		swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed / 2, yVelocity * swerve.maximumSpeed / 2),
-				angVelocity * controller.config.maxAngularVelocity / 2,
+		swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
+				angVelocity * controller.config.maxAngularVelocity,
 				driveMode.getAsBoolean());
-
-		double rotation = Math.atan2(Constants.AprilTags.layout.get(7).pose.getY() - swerve.getPose().getY(), Constants.AprilTags.layout.get(7).pose.getX() - swerve.getPose().getX());
-		log("Rot error", rotation);
-
 	}
 
 	// Called once the command ends or is interrupted.
