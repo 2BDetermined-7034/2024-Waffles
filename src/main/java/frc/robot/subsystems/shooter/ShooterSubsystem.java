@@ -129,8 +129,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @return Angle to shoot into the shooter at (in degrees)
 	 */
 	public double distanceToAngleWithin(double distance) {
-			return Math.toDegrees(Math.atan((2.046 - (0.457 + 0.114 * Math.sin(0.423480295541))) / distance));
-
+		return Math.toDegrees(Math.atan((2.0574 - 0.4572 + 0.1) / (distance + 0.1778)));
 			/*
 		Here's what all the stupid numbers mean:
 		Numerator: 2.046: height of the speaker (meters)

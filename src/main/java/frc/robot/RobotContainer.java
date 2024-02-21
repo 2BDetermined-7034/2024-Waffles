@@ -19,10 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.auto.AutoFactory;
 import frc.robot.commands.drivebase.ControllerDrive;
 import frc.robot.commands.drivebase.TeleopDrive;
 import frc.robot.commands.shooter.ShooterCommand;
@@ -31,7 +29,7 @@ import frc.robot.commands.shooter.ShooterSourceIntake;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
-import frc.robot.commands.drivebase.RotateDriveCommand;
+import frc.robot.commands.drivebase.RotateToTag;
 
 import java.io.File;
 
@@ -56,7 +54,7 @@ public class RobotContainer {
 	}
 	public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
 	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
-	public RotateDriveCommand rotateDriveCommand = new RotateDriveCommand(drivebase);
+	public RotateToTag rotateToTag = new RotateToTag(drivebase);
 	public ShooterReset shooterReset = new ShooterReset(shooterSubsystem, drivebase);
 	private ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Driver");
 
@@ -69,7 +67,7 @@ public class RobotContainer {
 		shuffleboardTab.addCamera("Shooter Cam", "greencasecam", "http://10.70.34.233:1186/stream.mjpg");
 		shuffleboardTab.add("Field", drivebase.getField());
 		shuffleboardTab.add("Shooter Angle Position", shooterSubsystem.getShooterAngleDegrees());
-		shuffleboardTab.add("NavX Yaw", drivebase.getYaw());
+//		shuffleboardTab.add("NavX Yaw", drivebase.getYaw());
 
 		// Build an auto chooser. This will use Commands.none() as the default option.
 		autoChooser = AutoBuilder.buildAutoChooser();
@@ -127,7 +125,7 @@ public class RobotContainer {
 
 		//new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
 
-		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateDriveCommand);
+		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateToTag);
 		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
 		new Trigger(driverController::getL1Button).onTrue(shooterReset);
 

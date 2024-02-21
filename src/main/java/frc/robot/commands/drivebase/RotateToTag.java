@@ -1,8 +1,7 @@
 package frc.robot.commands.drivebase;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,13 +9,13 @@ import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.utils.SubsystemLogging;
 
-public class RotateDriveCommand extends Command implements SubsystemLogging {
+public class RotateToTag extends Command implements SubsystemLogging {
 	PIDController controller =  new PIDController(0.2,0,0);
 	private SwerveSubsystem swerve;
-	public RotateDriveCommand(SwerveSubsystem swerveSubsystem) {
+	public RotateToTag(SwerveSubsystem swerveSubsystem) {
 		this.swerve = swerveSubsystem;
 		controller.enableContinuousInput(-Math.PI,Math.PI);
-		controller.setTolerance(0.1);
+		controller.setTolerance(0.01, 0.1);
 		addRequirements(swerveSubsystem);
 	}
 
@@ -36,7 +35,8 @@ public class RotateDriveCommand extends Command implements SubsystemLogging {
 
 
 		int tagID = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? 4 : 7;
-		double rotation = Math.atan2(Constants.AprilTags.layout.get(tagID).pose.getY() - swerve.getPose().getY(), Constants.AprilTags.layout.get(tagID).pose.getX() - swerve.getPose().getX());
+		Pose3d tagPose = Constants.AprilTags.layout.get(tagID).pose;
+		double rotation = Math.atan2(tagPose.getY() - swerve.getPose().getY(), tagPose.getX() - swerve.getPose().getX());
 		//double rotation  = Constants.AprilTags.layout.get(tagID).pose.getRotation().toRotation2d().getRadians() - swerve.getHeading().getRadians();
 		log("Shooter rotation  error", rotation);
 		swerve.drive(new Translation2d(), controller.calculate(swerve.getHeading().getRadians(), rotation) , true);
