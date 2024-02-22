@@ -4,16 +4,16 @@ hide empty description
 
 Title Robot State Flow Diagram
 
-[*] -> Robot
+[*] -> Robot #a8e6cf
 
-Robot --> SoftwareSubsystems
-state Constants #red{
-  state ShooterConstants{
+Robot --> SoftwareSubsystems #dcedc1
+state Constants #dcedc1{
+  state ShooterConstants #ffd3b6{
     state IndexSpeed
     state ShooterSpeed
     state PIDConstants
   }
-  state IntakeConstants{
+  state IntakeConstants #ffd3b6{
     state IntakeSpeed
   }
 }
@@ -23,7 +23,7 @@ Robot -d-> Constants
 
 SoftwareSubsystems --> DriveBase
 
-State DriveBase #pink {
+State DriveBase #ffd3b6 {
   state YAGSL
   YAGSL --> SwerveModules
   YAGSL : Swerve Library
@@ -71,8 +71,8 @@ State DriveBase #pink {
 
 SoftwareSubsystems --> Intake
 
-state Intake #orangered  {
-  state IntakeModules #pink{
+state Intake #ffd3b6  {
+  state IntakeModules #ffaaa5{
       state IntakeCANSpark #orange{
         state IntakeNeo1
         state IntakeNeo2
@@ -80,7 +80,7 @@ state Intake #orangered  {
       }
      state LaserCAN
   }
-  state IntakeCommands #purple{
+  state IntakeCommands #ffaaa5{
       state Spit
       state RunIntake
       LaserCAN -d-> IntakeNotePresent : boolean
@@ -96,8 +96,8 @@ state Intake #orangered  {
 
 SoftwareSubsystems --> Shooter
 
-state Shooter #green {
-  state Modules #pink {
+state Shooter #ffd3b6 {
+  state Modules #ffaaa5 {
     state ShooterCANSpark #orange{
       state IndexerNeo550
     }
@@ -105,7 +105,7 @@ state Shooter #green {
     state AngleFalcon
     state Shooter.Modules.LaserCAN
   }
-  state ShooterCommands #purple {
+  state ShooterCommands #ffaaa5 {
     state NotePresent
     state Shoot
     state SetAngle
@@ -122,30 +122,42 @@ state Shooter #green {
 
 SoftwareSubsystems --> Climb
 
-state Climb #goldenrod{
+state Climb #ffd3b6{
   [*] -d-> ClimbNeo
   ClimbNeo : x2
   
 }
 
 SoftwareSubsystems --> Vision
-state Vision #aquamarine {
+state Vision #ffd3b6 {
 
- state PhotonVision #teal { 
+ state PhotonVision #teal {
   state "ArducamOV9281" as apcam
   AprilTags <-d- apcam : detects
   AprilTags -d-> distance : gets
-  ||
+
   state "ArducamOV2381" as notecam
   Notes <-d- notecam : detects
-  
-  }
-  
-  
+  state photontracktarget
+  state hastargets
+  state photonposeestimator
+  photonposeestimator--> returnspose
+   hastargets --> getsifhastargets
+   getsifhastargets --> photontracktarget
+  photontracktarget --> getstarget
+getstarget -u-> distance
+    }
 }
 
-Robot --> ElectricalSubsystems
+Robot --> ElectricalSubsystems #dcedc1
 
+state Indexer #ffd3b6{
+    state indexCommands #ffaaa5{
+    state indexrun
+    }
+}
+
+SoftwareSubsystems --> Indexer
 
 Vision.PhotonVision.distance -> Shooter.ShooterCommands.SetAngle : ArcTan(Distance to speaker/Difference between desired height and PhotonVision height)
 Constants.ShooterConstants.PIDConstants -> Shooter.Modules.AngleFalcon
@@ -153,8 +165,6 @@ Constants.ShooterConstants.ShooterSpeed -> Shooter.Modules.VelocityFalcon
 Constants.ShooterConstants.IndexSpeed -> Shooter.Modules.ShooterIndexerNeo550
 Constants.IntakeConstants.IntakeSpeed -> Intake.IntakeCommands.RunIntake : Takes in speed
 Constants.IntakeConstants.IntakeSpeed -> Intake.IntakeCommands.Spit : Takes in speed
-
-
 
 
 @enduml
