@@ -107,7 +107,8 @@ SoftwareSubsystems --> Climb
 state Climb #goldenrod{
   [*] -d-> ClimbNeo
   ClimbNeo : x2
-  
+  ClimbNeo --> expand
+  ClimbNeo --> retract
 }
 
 SoftwareSubsystems --> Vision
@@ -119,15 +120,35 @@ state Vision #aquamarine {
   AprilTags -d-> distance : gets
   ||
   state "ArducamOV2381" as notecam
-  Notes <-d- notecam : detects
+  Notees <-d- notecam : detects
   
   }
-  
-  
+  state Limelight #lime {
+     state position
+     state lazercam
+     state NetworkTable #lightgreen
+
+     state NetworkTableEntry #lightblue {
+        state tx #violet
+        state ty #lightblue
+        state ta #lightgreen
+        state botpose #lightyellow
+     }
+     NetworkTable -d-> NetworkTableEntry : gets the entry of tx, ty, ta, and botpose
+     lazercam -d-> position : gets
+  }
+  Limelight : [current loop function "periodic" -> repeatedly logs the value of x, y, area]
 }
 
 Robot --> ElectricalSubsystems
 
+state index{
+    state kraken
+    kraken --> foreward
+    kraken --> backward
+
+}
+SoftwareSubsystems --> index #orange
 
 Vision.PhotonVision.distance -> Shooter.Commands.SetAngle : ArcTan(Distance to speaker/Difference between desired height and PhotonVision height)
 Constants.ShooterConstants.PIDConstants -> Shooter.Modules.AngleFalcon
