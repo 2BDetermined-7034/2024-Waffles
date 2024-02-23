@@ -15,6 +15,9 @@ public interface SubsystemLogging {
     default void log(String key, Translation3d val) {
         Logger.recordOutput(String.format("%s/%s", this.getClass().getName().substring(22), key), (val));
     }
+    default void log(String key, Rotation2d val) {
+        Logger.recordOutput(String.format("%s/%s", this.getClass().getName().substring(22), key), (val));
+    }
 
 
     default void log(String key, double val) {

@@ -2,6 +2,7 @@ package frc.robot.commands.drivebase;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,17 +35,18 @@ public class RotateToTag extends Command implements SubsystemLogging {
 //		}
 
 
-		int tagID = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red) ? 4 : 7;
+		int tagID = DriverStation.getAlliance().orElseThrow() == DriverStation.Alliance.Red ? 4 : 7;
 		Pose3d tagPose = Constants.AprilTags.layout.get(tagID).pose;
-		double rotation = Math.atan2(tagPose.getY() - swerve.getPose().getY(), tagPose.getX() - swerve.getPose().getX());
+		Rotation2d rotationSetpoint = Rotation2d.fromRadians(Math.atan2(tagPose.getY() - swerve.getPose().getY(), tagPose.getX() - swerve.getPose().getX())).rotateBy(Rotation2d.fromDegrees(180));
 		//double rotation  = Constants.AprilTags.layout.get(tagID).pose.getRotation().toRotation2d().getRadians() - swerve.getHeading().getRadians();
-		log("Shooter rotation  error", rotation);
-		swerve.drive(new Translation2d(), controller.calculate(swerve.getHeading().getRadians(), rotation) , true);
+		log("Robot rotation setpoint", rotationSetpoint);
+		log("Robot rotation error", controller.calculate(swerve.getHeading().getRadians(), rotationSetpoint.getRadians()));
+		log("Robot rotation", swerve.getPose().getRotation());
+		swerve.drive(new Translation2d(), controller.calculate(swerve.getHeading().getRadians(), rotationSetpoint.getRadians()) , true);
 	}
 
 	@Override
 	public boolean isFinished() {
 		return controller.atSetpoint();
-
 	}
 }
