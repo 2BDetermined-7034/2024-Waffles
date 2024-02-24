@@ -31,6 +31,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.Photonvision;
 import frc.robot.commands.drivebase.RotateToTag;
 
+import javax.xml.transform.Source;
 import java.io.File;
 
 /**
@@ -128,6 +129,9 @@ public class RobotContainer {
 		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateToTag);
 		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
 		new Trigger(driverController::getL1Button).onTrue(shooterReset);
+
+		new Trigger(operatorController::getBButton).onTrue(new ShooterReset(shooterSubsystem, drivebase));
+		new Trigger(operatorController::getXButton).onTrue(new ShooterSourceIntake(shooterSubsystem, drivebase));
 
 	}
 
