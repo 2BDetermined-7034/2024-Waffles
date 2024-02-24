@@ -109,7 +109,7 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	 * @param position encoder position
 	 */
 	public void setPosition(double position) {
-		angleMotorPosition = MathUtil.clamp(position, 0, 3.5);
+		angleMotorPosition = MathUtil.clamp(position, 0, 3.3);
 	}
 
 	/**
@@ -202,5 +202,9 @@ public class ShooterSubsystem extends SubsystemBase implements SubsystemLogging 
 	}
 	public double degreesToRotations(double degrees){
 		return ((-degrees + angleAtHorizon) / 360.0) * angleGearRatio;
+	}
+
+	public double getAngleGoalDegrees(){
+		return rotationsToDegrees(angleMotorPosition);
 	}
 }

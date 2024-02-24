@@ -24,6 +24,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.drivebase.ControllerDrive;
 import frc.robot.commands.drivebase.TeleopDrive;
 import frc.robot.commands.shooter.ShooterCommand;
+import frc.robot.commands.shooter.ShooterManualAngle;
 import frc.robot.commands.shooter.ShooterReset;
 import frc.robot.commands.shooter.ShooterSourceIntake;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -132,7 +133,12 @@ public class RobotContainer {
 
 		new Trigger(operatorController::getBButton).onTrue(new ShooterReset(shooterSubsystem, drivebase));
 		new Trigger(operatorController::getXButton).onTrue(new ShooterSourceIntake(shooterSubsystem, drivebase));
-
+		new Trigger(operatorController::getAButton).toggleOnTrue(
+				new ShooterManualAngle(shooterSubsystem, drivebase,
+						() -> MathUtil.applyDeadband(operatorController.getRightTriggerAxis(), 0.1),
+						() -> MathUtil.applyDeadband(operatorController.getLeftTriggerAxis(), 0.1)
+				)
+		);
 	}
 
 
