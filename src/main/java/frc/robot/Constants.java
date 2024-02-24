@@ -36,8 +36,11 @@ public final class Constants
     public static final int motorAID = 255;
     public static final int motorBID = 256;
     public static final double MAX_CLIMB_VELOCITY = 0.5;
-    public static final double CLIMB_MOTOR_TARGET_POSITION_REVOLUTIONS = 15.929;
+    public static final double CLIMB_MOTOR_TARGET_POSITION_REVOLUTIONS = 15.64;
     public static final double CLIMB_MOTOR_START_POSITION_REVOLUTIONS = 0.0; //I don't think we need this btw
+    public static final double CLIMB_MOTOR_GEAR_RATIO = 3.5; //3.5:1 gear ratio
+    public static final double BELT_THICKNESS = 0.0625; //inches
+    public static final double SPOOL_RADIUS = 0.75; //inches
   }
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag

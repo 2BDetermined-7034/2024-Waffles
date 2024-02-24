@@ -47,6 +47,9 @@ public class ClimbSubsystem extends SubsystemBase {
 			motorA.set(controller.calculate(motorA.getPosition().getValue(), targetPosition));
 	}
 
+	public double getRevToDistance(double climbStroke){
+		return ((Math.sqrt(Math.PI * Math.pow(SPOOL_RADIUS, 2) / Math.PI) - SPOOL_RADIUS) / BELT_THICKNESS) * CLIMB_MOTOR_GEAR_RATIO;
+	}
 	//Extend the climbing arm
 	public void extend() {
 		targetPosition = CLIMB_MOTOR_TARGET_POSITION_REVOLUTIONS;
