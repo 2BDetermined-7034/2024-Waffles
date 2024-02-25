@@ -265,7 +265,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging {
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 */
 	public void zeroGyro() {
-		swerveDrive.setGyroOffset(new Rotation3d(0, 0, swerveDrive.getOdometryHeading().getRadians()));
+		//swerveDrive.setGyroOffset(new Rotation3d(0, 0, swerveDrive.getOdometryHeading().getRadians()));
 
 		swerveDrive.zeroGyro();
 	}
