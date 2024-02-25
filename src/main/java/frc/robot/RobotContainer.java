@@ -72,7 +72,7 @@ public class RobotContainer {
 //		shuffleboardTab.add("NavX Yaw", drivebase.getYaw());
 
 		// Build an auto chooser. This will use Commands.none() as the default option.
-		autoChooser = AutoBuilder.buildAutoChooser();
+		autoChooser = new SendableChooser<>();
 		autoChooser.addOption("Speaker Shot then drive 2m", new PathPlannerAuto("SpeakerShotForward"));
 		autoChooser.addOption("Drive Forward", drivebase.getAutonomousCommand("2mStraight", true));
 		autoChooser.setDefaultOption("Do Nothing", new WaitCommand(1));

@@ -11,11 +11,11 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.utils.SubsystemLogging;
 
 public class RotateToTag extends Command implements SubsystemLogging {
-	PIDController controller =  new PIDController(0.2,0,0);
+	PIDController controller =  new PIDController(0.5,0.1,0);
 	private SwerveSubsystem swerve;
 	public RotateToTag(SwerveSubsystem swerveSubsystem) {
 		this.swerve = swerveSubsystem;
-		controller.enableContinuousInput(-Math.PI,Math.PI);
+		controller.enableContinuousInput(0,2 * Math.PI);
 		controller.setTolerance(0.01, 0.1);
 		addRequirements(swerveSubsystem);
 	}
