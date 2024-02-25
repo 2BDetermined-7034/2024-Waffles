@@ -14,7 +14,7 @@ public class Photonvision extends SubsystemBase implements SubsystemLogging {
     private PhotonPipelineResult pipelineResult;
 
     public Photonvision() {
-        camera = new PhotonCamera("greencasecam");
+        camera = new PhotonCamera("greencase");
         pipelineResult = new PhotonPipelineResult();
     }
 

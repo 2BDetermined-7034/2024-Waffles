@@ -49,15 +49,15 @@ public class RobotContainer {
 	XboxController operatorController = new XboxController(1);
 	PS5Controller driverController = new PS5Controller(0);
 	//  public static Limelight limelight= new Limelight();
-	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+//	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
 	static {
 
 	}
-	public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
-	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
+//	public ShooterCommand shooterCommand = new ShooterCommand(shooterSubsystem, drivebase);
+//	public ShooterCommand shooterSourceI = new ShooterSourceIntake(shooterSubsystem, drivebase);
 	public RotateToTag rotateToTag = new RotateToTag(drivebase);
-	public ShooterReset shooterReset = new ShooterReset(shooterSubsystem, drivebase);
+//	public ShooterReset shooterReset = new ShooterReset(shooterSubsystem, drivebase);
 	private ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Driver");
 
 	/**
@@ -68,7 +68,7 @@ public class RobotContainer {
 
 		shuffleboardTab.addCamera("Shooter Cam", "greencasecam", "http://10.70.34.233:1186/stream.mjpg");
 		shuffleboardTab.add("Field", drivebase.getField());
-		shuffleboardTab.add("Shooter Angle Position", shooterSubsystem.getShooterAngleDegrees());
+//		shuffleboardTab.add("Shooter Angle Position", shooterSubsystem.getShooterAngleDegrees());
 //		shuffleboardTab.add("NavX Yaw", drivebase.getYaw());
 
 		// Build an auto chooser. This will use Commands.none() as the default option.
@@ -123,22 +123,22 @@ public class RobotContainer {
 		//new Trigger(() -> operatorController.getBackButton()).onTrue(new InstantCommand(drivebase::zeroGyro));
 		new Trigger(driverController::getOptionsButton).onTrue(new InstantCommand(drivebase::zeroGyro));
 
-		new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
+//		new Trigger(driverController::getCircleButton).toggleOnTrue(shooterCommand);
 
 		//new Trigger(driverController::getL2Button).onTrue(AutoFactory.pointTowardsSpeakerTag(drivebase));
 
 		new Trigger(driverController::getTriangleButton).toggleOnTrue(rotateToTag);
-		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
-		new Trigger(driverController::getL1Button).onTrue(shooterReset);
+//		new Trigger(driverController::getSquareButton).toggleOnTrue(shooterSourceI);
+//		new Trigger(driverController::getL1Button).onTrue(shooterReset);
 
-		new Trigger(operatorController::getBButton).onTrue(new ShooterReset(shooterSubsystem, drivebase));
-		new Trigger(operatorController::getXButton).onTrue(new ShooterSourceIntake(shooterSubsystem, drivebase));
-		new Trigger(operatorController::getAButton).toggleOnTrue(
-				new ShooterManualAngle(shooterSubsystem, drivebase,
-						() -> MathUtil.applyDeadband(operatorController.getRightTriggerAxis(), 0.1),
-						() -> MathUtil.applyDeadband(operatorController.getLeftTriggerAxis(), 0.1)
-				)
-		);
+//		new Trigger(operatorController::getBButton).onTrue(new ShooterReset(shooterSubsystem, drivebase));
+//		new Trigger(operatorController::getXButton).onTrue(new ShooterSourceIntake(shooterSubsystem, drivebase));
+//		new Trigger(operatorController::getAButton).toggleOnTrue(
+//				new ShooterManualAngle(shooterSubsystem, drivebase,
+//						() -> MathUtil.applyDeadband(operatorController.getRightTriggerAxis(), 0.1),
+//						() -> MathUtil.applyDeadband(operatorController.getLeftTriggerAxis(), 0.1)
+//				)
+//		);
 	}
 
 
@@ -148,7 +148,7 @@ public class RobotContainer {
 	 *
 	 */
 	public void registerPathplannerCommands() {
-		NamedCommands.registerCommand("Shoot (with aim)", new ShooterCommand(shooterSubsystem, drivebase));
+//		NamedCommands.registerCommand("Shoot (with aim)", new ShooterCommand(shooterSubsystem, drivebase));
 	}
 
 	/**

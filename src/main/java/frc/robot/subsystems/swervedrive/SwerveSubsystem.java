@@ -74,7 +74,7 @@ public class SwerveSubsystem extends SubsystemBase implements SubsystemLogging {
 		double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75, 1);
 
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-		SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
+			SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 		try {
 			swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
 			// Alternative method if you don't want to supply the conversion factor via JSON files.
